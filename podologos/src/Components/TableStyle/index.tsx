@@ -2,7 +2,7 @@ export const CustomStyles = {
   table: {
     style: {
       maxWidth: "100%",
-      maxHeight: "65vh",
+      maxHeight: "90vh",
       borderRadius: "10px",
       overflow: "auto",
     },
@@ -11,13 +11,7 @@ export const CustomStyles = {
     style: {
       minHeight: "64px",
       maxHeight: "64px",
-    },
-  },
-  divider: {
-    style: {
-      margimLeft: "10px",
-      borderHeight: "10px",
-      borderColor: "#2087ED",
+      borderTopWidth: "1px",
     },
   },
   headRow: {
@@ -35,9 +29,10 @@ export const CustomStyles = {
   },
   cells: {
     style: {
-      fontSize: "16px",
-      fontWeight: "600",
+      fontSize: "12px",
+      fontWeight: "500",
       color: "#46555A",
+      width: "auto",
     },
   },
 };

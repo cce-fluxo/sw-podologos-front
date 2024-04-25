@@ -1,16 +1,27 @@
 "use client";
 import { CustomStyles } from "@/Components/TableStyle/index";
 import DataTable, { createTheme } from "react-data-table-component";
+import Image from "next/image";
+import PacienteImage from "@/assets/PacienteImage.svg";
 
 export default function PodologosCadastrados() {
   const columns = [
     {
       name: "Nome",
-      selector: (row: any) => "Amaral Joaquim Cardoso",
+      selector: (row: any) => (
+        <div className="flex gap-2 items-center">
+          <Image alt="" src={PacienteImage}></Image>
+          <p className="whitespace-nowrap">Amaral Joaquim Cardoso</p>
+        </div>
+      ),
     },
     {
       name: "Formação",
-      selector: (row: any) => "Superior em Podologia UFRJ/2022",
+      selector: (row: any) => (
+        <p className="whitespace-nowrap">
+          Superior em Podologia <br /> UFRJ/2022
+        </p>
+      ),
     },
     {
       name: "Email",
@@ -29,43 +40,36 @@ export default function PodologosCadastrados() {
   const data = [
     {
       id: 1,
-      name: "Math",
-      userTypes: "I woud like to know if I drop...",
-      course: "Aug 23",
-      questions: "Low",
-      answers: "02",
     },
     {
       id: 1,
-      name: "Math",
-      userTypes: "I woud like to know if I drop...",
-      course: "Aug 23",
-      questions: "Low",
-      answers: "02",
     },
     {
       id: 1,
-      name: "Math",
-      userTypes: "I woud like to know if I drop...",
-      course: "Aug 23",
-      questions: "Low",
-      answers: "02",
     },
     {
       id: 1,
-      name: "Math",
-      userTypes: "I woud like to know if I drop...",
-      course: "Aug 23",
-      questions: "Low",
-      answers: "02",
     },
     {
       id: 1,
-      name: "Math",
-      userTypes: "I woud like to know if I drop...",
-      course: "Aug 23",
-      questions: "Low",
-      answers: "02",
+    },
+    {
+      id: 1,
+    },
+    {
+      id: 1,
+    },
+    {
+      id: 1,
+    },
+    {
+      id: 1,
+    },
+    {
+      id: 1,
+    },
+    {
+      id: 1,
     },
   ];
 
