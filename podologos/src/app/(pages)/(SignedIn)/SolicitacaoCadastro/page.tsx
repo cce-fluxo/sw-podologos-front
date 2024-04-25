@@ -4,7 +4,7 @@ import DataTable, { createTheme } from "react-data-table-component";
 import Image from "next/image";
 import PacienteImage from "@/assets/PacienteImage.svg";
 
-export default function PodologosCadastrados() {
+export default function SolicitacaoCadastro() {
   const columns = [
     {
       name: "Nome",
@@ -56,26 +56,13 @@ export default function PodologosCadastrados() {
     {
       id: 1,
     },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
   ];
 
   return (
     <div className="w-full h-full flex flex-col px-14 py-6 gap-3 overflow-auto">
-      <h1 className="text-azul text-[30px] font-bold">Podólogos cadastrados</h1>
+      <h1 className="text-azul text-[30px] font-bold">
+        Solicitações de cadastro
+      </h1>
       <div className="shadow-lg shadow-cinza rounded-2xl">
         <DataTable
           responsive

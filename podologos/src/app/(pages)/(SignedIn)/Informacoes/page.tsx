@@ -7,7 +7,7 @@ import Estrela from "@/Assets/Estrela.svg";
 
 export default function Informacoes() {
   return (
-    <div className="w-full h-full flex flex-col px-14 gap-3 overflow-auto">
+    <div className="w-full h-full flex flex-col px-14 py-6 gap-3 overflow-auto">
       <h1 className="text-azul text-[30px] font-bold">
         Informações do aplicativo
       </h1>
