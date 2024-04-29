@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mantine/hooks": "^7.8.1",
     "next": "14.2.1",
     "react": "^18",
     "react-data-table-component": "^7.6.2",
