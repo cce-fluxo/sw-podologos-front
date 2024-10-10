@@ -1,3 +1,5 @@
+import SideBar from "@/Components/SideBar";
+
 export default function RootLayout({
   children,
 }: {
@@ -5,7 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <div className="flex w-full h-full">
-      <div className="h-full w-[292px] bg-azul"></div>
+      <SideBar />
       <div className="flex-1">{children}</div>
     </div>
   );

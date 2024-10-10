@@ -11,6 +11,8 @@ const config: Config = {
       colors: {
         azul: "#2087ED",
         cinza: "#C3C5C7",
+        cinzaTexto: "#636C74",
+        cinzaTextoClaro: "#A4AAB2",
         vermelho: "#EB5757",
       },
       backgroundImage: {
