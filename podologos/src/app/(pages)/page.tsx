@@ -7,7 +7,7 @@ export default function Home() {
 
   useEffect(() => {
     router.push("/Login");
-  }, []);
+  }, [router]);
 
   return <div className="w-screen h-screen"></div>;
 }
