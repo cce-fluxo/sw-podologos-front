@@ -8,16 +8,10 @@ import Modal from 'react-modal';
 import Image from 'next/image';
 import Concluido from '@/Assets/Concluido.svg';
 import PopUpDelete from '@/Components/popUps/popUpDelete';
+import { useRouter } from 'next/navigation';
 
 export default function EsqueciSenha() {
-  const [modal, setModal] = useState(false);
-  const [data, setData] = useState({
-    email: '',
-  });
-
-  function onConcluidoClick() {
-    setModal(false);
-  }
+  const router = useRouter();
 
   const column = [
     {
@@ -27,8 +21,9 @@ export default function EsqueciSenha() {
       component: GenericField,
     },
   ];
-
-  const onSubmit = (data: any) => {};
+  const onSubmit = (data: any) => {
+    router.push('/ForgotPassword/Codigo');
+  };
 
   return (
     <div className='flex h-full w-full flex-col items-center justify-evenly'>
@@ -42,13 +37,14 @@ export default function EsqueciSenha() {
       <FormData.Root className='flex h-auto w-[84%]' onSubmit={onSubmit}>
         <FormData.Form
           columns={column}
-          id='formQuestion'
+          id='enviarEmail'
           className='flex w-full flex-1 flex-col gap-4'
         ></FormData.Form>
       </FormData.Root>
       <div className='flex w-full flex-col items-center space-y-3'>
         <Button
-          onClick={() => setModal(true)}
+          form='enviarEmail'
+          type='submit'
           placeholder='Enviar'
           className='w-[84%]'
         ></Button>
@@ -59,7 +55,6 @@ export default function EsqueciSenha() {
           ></Button>
         </Link>
       </div>
-      <PopUpDelete modalIsOpen={modal} onClick={onConcluidoClick}></PopUpDelete>
     </div>
   );
 }

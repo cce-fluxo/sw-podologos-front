@@ -1,6 +1,6 @@
-import { Formik, useFormikContext } from "formik";
-import React from "react";
-import { twMerge } from "tailwind-merge";
+import { Formik, useFormikContext } from 'formik';
+import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface FormDataProps {
   onSubmit: (data: any) => void;
@@ -18,7 +18,7 @@ function FormDataRoot({
   schema,
 }: FormDataProps) {
   return (
-    <div id="select" className={twMerge("w-full h-full", className)}>
+    <div id='select' className={twMerge('h-full w-full', className)}>
       <Formik
         enableReinitialize
         initialValues={initialValues}

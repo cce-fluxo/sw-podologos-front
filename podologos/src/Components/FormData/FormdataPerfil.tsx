@@ -1,7 +1,7 @@
-import { Form, Field } from "formik";
-import { twMerge } from "tailwind-merge";
-import React, { useState } from "react";
-import InputMask from "react-input-mask";
+import { Form, Field } from 'formik';
+import { twMerge } from 'tailwind-merge';
+import React, { useState } from 'react';
+import InputMask from 'react-input-mask';
 
 interface FromDataProps {
   columns: Col[];
@@ -28,10 +28,10 @@ function FormdataPerfil({
   touched,
 }: FromDataProps) {
   return (
-    <Form className="w-full" id={id}>
-      <div className={twMerge("flex flex-col", className)}>
+    <Form className='w-full' id={id}>
+      <div className={twMerge('flex flex-col', className)}>
         {columns.map((col: Col, index) => (
-          <div key={index} className="mt-2 mb-2">
+          <div key={index} className='mb-2 mt-2'>
             <div>
               <Field
                 type={col.type}
@@ -40,7 +40,7 @@ function FormdataPerfil({
                 {...col}
               />
               {touched[col.name] && errors[col.name] && (
-                <p className="text-red-600">{errors[col.name]}</p>
+                <p className='text-red-600'>{errors[col.name]}</p>
               )}
             </div>
           </div>

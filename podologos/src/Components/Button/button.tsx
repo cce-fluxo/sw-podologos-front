@@ -1,5 +1,5 @@
-import React from "react";
-import { twMerge } from "tailwind-merge";
+import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface ButtonProps {
   placeholder?: string;
@@ -19,7 +19,7 @@ function Button({
   return (
     <button
       className={twMerge(
-        "flex items-center justify-center w-full h-[50px] rounded-[8px] text-[18px] bg-azul text-white",
+        'flex h-[50px] w-full items-center justify-center rounded-[8px] bg-azul text-[18px] text-white',
         className
       )}
       onClick={onClick}
