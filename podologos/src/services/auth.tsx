@@ -1,4 +1,4 @@
-import { toast } from "react-toastify";
+import api from './axios';
 
 type User = {
   email: string;
@@ -8,17 +8,10 @@ type User = {
 export async function SignInRequest({ email, password }: User) {
   try {
     const user = { email: email, password: password };
-    const response = await toast.promise(
-      api.post("/auth/signin", user, {
-        withCredentials: true,
-      }),
-      {
-        pending: "Please wait...",
-        success: "Login successful",
-        error: "Error while logging in",
-      }
-    );
-
+    const response = await api.post('/admin', user, {
+      withCredentials: true,
+    });
+    console.log('Response:', response.data);
     return response.data;
   } catch (error) {
     console.log(error);

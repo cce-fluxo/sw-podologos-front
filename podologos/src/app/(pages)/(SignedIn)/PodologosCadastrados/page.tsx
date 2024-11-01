@@ -1,39 +1,39 @@
-"use client";
-import { CustomStyles } from "@/Components/TableStyle/index";
-import DataTable, { createTheme } from "react-data-table-component";
-import Image from "next/image";
-import PacienteImage from "@/assets/PacienteImage.svg";
+'use client';
+import { CustomStyles } from '@/Components/TableStyle/index';
+import DataTable, { createTheme } from 'react-data-table-component';
+import Image from 'next/image';
+import PacienteImage from '@/assets/PacienteImage.svg';
 
 export default function PodologosCadastrados() {
   const columns = [
     {
-      name: "Nome",
+      name: 'Nome',
       selector: (row: any) => (
-        <div className="flex gap-2 items-center">
-          <Image alt="" src={PacienteImage}></Image>
-          <p className="whitespace-nowrap">Amaral Joaquim Cardoso</p>
+        <div className='flex items-center gap-2'>
+          <Image alt='' src={PacienteImage}></Image>
+          <p className='whitespace-nowrap'>Amaral Joaquim Cardoso</p>
         </div>
       ),
     },
     {
-      name: "Formação",
+      name: 'Formação',
       selector: (row: any) => (
-        <p className="whitespace-nowrap">
+        <p className='whitespace-nowrap'>
           Superior em Podologia <br /> UFRJ/2022
         </p>
       ),
     },
     {
-      name: "Email",
-      selector: (row: any) => "amaraljoaquim@gmail.com",
+      name: 'Email',
+      selector: (row: any) => 'amaraljoaquim@gmail.com',
     },
     {
-      name: "Telefone",
-      selector: (row: any) => "(21) 12345-6789",
+      name: 'Telefone',
+      selector: (row: any) => '(21) 12345-6789',
     },
     {
-      name: "CEP",
-      selector: (row: any) => "12345-678",
+      name: 'CEP',
+      selector: (row: any) => '12345-678',
     },
   ];
 
@@ -74,9 +74,9 @@ export default function PodologosCadastrados() {
   ];
 
   return (
-    <div className="w-full h-full flex flex-col px-14 py-6 gap-3 overflow-auto">
-      <h1 className="text-azul text-[30px] font-bold">Podólogos cadastrados</h1>
-      <div className="shadow-lg shadow-cinza rounded-2xl">
+    <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
+      <h1 className='text-[30px] font-bold text-azul'>Podólogos cadastrados</h1>
+      <div className='rounded-2xl shadow-lg shadow-cinza'>
         <DataTable
           responsive
           columns={columns}
