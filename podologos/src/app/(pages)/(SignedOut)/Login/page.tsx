@@ -3,7 +3,7 @@ import React from "react";
 import {
   GenericField,
   GenericPasswordField,
-} from "@/components/FormData/Input";
+} from "@/Components/FormData/Input/index";
 import Link from "next/link";
 import Button from "@/Components/Button/button";
 import { FormData } from "@/Components/FormData";
@@ -49,7 +49,7 @@ export default function Login() {
       </FormData.Root>
 
       <Button
-        onClick={}
+        onClick={() => console.log("Button clicked")}
         form="formQuestion"
         className="w-[84%]"
         placeholder="Entrar"
