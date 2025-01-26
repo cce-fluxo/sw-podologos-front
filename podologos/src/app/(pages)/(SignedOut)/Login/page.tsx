@@ -37,6 +37,7 @@ export default function Login() {
   ];
 
   const data = {
+    name: 'Felipe',
     email: '',
     password: '',
   };
@@ -54,7 +55,10 @@ export default function Login() {
           id='formLogin'
           className='flex w-full flex-1 flex-col gap-4'
         >
-          <Link href={'/ForgotPassword'} className='mt-[-15px] self-center'>
+          <Link
+            href={'/ForgotPassword/Email'}
+            className='mt-[-15px] self-center'
+          >
             <p className='text-azul'>Esqueci minha senha</p>
           </Link>
         </FormData.Form>

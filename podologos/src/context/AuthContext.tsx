@@ -16,20 +16,22 @@ type AuthContextType = {
 };
 export const AuthContext = createContext({} as AuthContextType);
 
+// COMEÇO DA FUNÇÃO 
 export function AuthProvider({ children }: any) {
   const router = useRouter();
   const [user, setUser] = useState<null>(null);
   const isAuthenticated = !!user;
+  const [token, setToken] = useState('');
 
   async function signIn({ email, password }: signInData) {
     try {
       console.log('Iniciando signIn com:', { email, password });
       const response = await SignInRequest({ email, password });
-      if (response.data) {
+      if (response) {
         setUser(response.data);
         router.push('/PodologosCadastrados');
       } else {
-        console.log('Usuário não encontrado');
+        console.log('Usuário não encontrado (tratamento)');
       }
     } catch (error) {
       console.log(error);

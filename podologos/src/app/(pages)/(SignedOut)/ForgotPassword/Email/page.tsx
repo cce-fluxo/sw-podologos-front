@@ -8,17 +8,15 @@ import Modal from 'react-modal';
 import Image from 'next/image';
 import Concluido from '@/Assets/Concluido.svg';
 import PopUpDelete from '@/Components/popUps/popUpDelete';
+import api from '@/services/axios';
+import { useRouter } from 'next/router';
 
 export default function EsqueciSenha() {
+  // const router = useRouter();
   const [modal, setModal] = useState(false);
-  const [data, setData] = useState({
+  const [email, setEmail] = useState({
     email: '',
   });
-
-  function onConcluidoClick() {
-    setModal(false);
-  }
-
   const column = [
     {
       name: 'email',
@@ -30,6 +28,20 @@ export default function EsqueciSenha() {
 
   const onSubmit = (data: any) => {};
 
+  function onConcluidoClick() {
+    setModal(false);
+  }
+
+  async function handleEmailSubmit(values: any) {
+    try {
+      const response = await api.patch('auth/admin/forgot-password', values);
+      setEmail(values.email);
+      // router.push('/ForgotPassword/Codigo ');
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className='flex h-full w-full flex-col items-center justify-evenly'>
       <h1 className='text-cinza_azulado text-[26px] font-[600]'>
@@ -39,7 +51,10 @@ export default function EsqueciSenha() {
         Informe o email cadastrado e um email com as instruções de recuperação
         será enviado.
       </p>
-      <FormData.Root className='flex h-auto w-[84%]' onSubmit={onSubmit}>
+      <FormData.Root
+        className='flex h-auto w-[84%]'
+        onSubmit={handleEmailSubmit}
+      >
         <FormData.Form
           columns={column}
           id='formQuestion'
@@ -48,7 +63,8 @@ export default function EsqueciSenha() {
       </FormData.Root>
       <div className='flex w-full flex-col items-center space-y-3'>
         <Button
-          onClick={() => setModal(true)}
+          form={'formQuestion'}
+          type={'submit'}
           placeholder='Enviar'
           className='w-[84%]'
         ></Button>
