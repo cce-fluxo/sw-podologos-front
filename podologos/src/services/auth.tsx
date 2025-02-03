@@ -1,4 +1,6 @@
 import api from './axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type User = {
   email: string;
@@ -9,9 +11,10 @@ export async function SignInRequest({ email, password }: User) {
   try {
     const user = { email, password };
     const response = await api.post('auth/admin/signin', user, { cors: true });
-    console.log('Responsta:', response.data);
+    toast.success('Login realizado com sucesso!');
     return response.data;
   } catch (error) {
-    console.log(error);
+    toast.error('Erro ao fazer login. Verifique suas credenciais.');
+    console.error(error);
   }
 }
