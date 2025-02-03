@@ -1,7 +1,6 @@
 import { Form, Field } from 'formik';
 import { twMerge } from 'tailwind-merge';
 import React, { useState } from 'react';
-import InputMask from 'react-input-mask';
 
 interface FromDataProps {
   columns: Col[];

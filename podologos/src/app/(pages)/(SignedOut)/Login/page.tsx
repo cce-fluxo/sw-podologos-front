@@ -15,10 +15,11 @@ export default function Login() {
   const { signIn } = useContext(AuthContext);
   const router = useRouter();
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (data: any) => {
     const User = {
-      email: values.email,
-      password: values.password,
+      email: data.email,
+      password: data.password,
+      name: data.name,
     };
     signIn(User);
   };

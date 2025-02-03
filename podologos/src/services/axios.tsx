@@ -7,4 +7,22 @@ const api = axios.create({
   },
 });
 
+api.interceptors.request.use(
+  async (config) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.error('Erro ao recuperar o token:', error);
+    }
+    return config;
+  },
+  (error) => {
+    // Trata erros de requisição
+    return Promise.reject(error);
+  }
+);
+
 export default api;

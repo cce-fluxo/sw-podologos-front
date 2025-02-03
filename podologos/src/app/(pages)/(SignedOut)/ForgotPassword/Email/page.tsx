@@ -37,6 +37,7 @@ export default function EsqueciSenha() {
       const response = await api.patch('auth/admin/forgot-password', values);
       setEmail(values.email);
       // router.push('/ForgotPassword/Codigo ');
+
       return response.data;
     } catch (error) {
       console.log(error);

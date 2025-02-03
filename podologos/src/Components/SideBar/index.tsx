@@ -2,22 +2,43 @@
 import Image from 'next/image';
 import { useMediaQuery } from '@mantine/hooks';
 import Hamburguer from '@/assets/Hamburguer.svg';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import LogOut from '@/assets/LogOut.svg';
+import { AuthContext, AuthContextType } from '@/context/AuthContext';
+import Button from '../Button/button';
+import ModalSimNao from '../popUps/ModalSimNao';
 
 export default function SideBar() {
   const sm640 = useMediaQuery('(max-width: 640px)');
   const [show, setShow] = useState(false);
   const [path, setpath] = useState(usePathname().split('/')[1]);
   const router = useRouter();
+  const signOut = useContext(AuthContext);
+  const authContext = useContext<AuthContextType>(AuthContext);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = () => {
+    // Your logic here, for example:
+    authContext.signOut();
+  };
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+  function Sair() {
+    setIsOpen(false);
+  }
 
   return (
     <>
       <Image
         src={Hamburguer}
         alt=''
-        className='absolute left-5 top-[34px] z-50'
+        className='absolute left-5 top-[34px] -z-30'
         style={{
           display: sm640 ? 'block' : 'none',
           transform: show && sm640 ? 'rotate(-90deg)' : 'rotate(0deg)',
@@ -89,12 +110,21 @@ export default function SideBar() {
             Lista de denúncias
           </button>
         </div>
-        <div className='mb-8 flex flex-1 items-end'>
-          <button className='flex items-center gap-2'>
+        <div className='mb-8 mr-40 flex flex-1 items-end justify-end'>
+          <Button
+            onClick={openModal}
+            className='flex gap-2 bg-white text-black'
+          >
             <Image src={LogOut} alt=''></Image>
             <p>Sair</p>
-          </button>
+          </Button>
         </div>
+        <ModalSimNao
+          isOpen={isOpen}
+          onNoClick={closeModal}
+          onYesClick={Sair}
+          text='Tem certeza que deseja sair de sua conta?'
+        />
       </div>
     </>
   );

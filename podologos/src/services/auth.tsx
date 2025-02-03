@@ -7,11 +7,9 @@ type User = {
 
 export async function SignInRequest({ email, password }: User) {
   try {
-    const user = { email: email, password: password };
-    const response = await api.post('/admin', user, {
-      withCredentials: true,
-    });
-    console.log('Response:', response.data);
+    const user = { email, password };
+    const response = await api.post('auth/admin/signin', user, { cors: true });
+    console.log('Responsta:', response.data);
     return response.data;
   } catch (error) {
     console.log(error);

@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '../Button/button';
+import Button from '@/Components/Button/button';
 import Modal from 'react-modal';
 
 interface PopupProps {
