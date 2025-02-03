@@ -1,5 +1,5 @@
 'use client';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   GenericField,
   GenericPasswordField,
@@ -10,18 +10,27 @@ import { FormData } from '@/Components/FormData';
 import { Router } from 'next/router';
 import { AuthContext } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { ClipLoader } from 'react-spinners';
 
 export default function Login() {
   const { signIn } = useContext(AuthContext);
   const router = useRouter();
+  const [loading, setLoading] = useState(false); // Estado para loading
 
   const onSubmit = async (data: any) => {
+    setLoading(true); // Ativa loading
     const User = {
       email: data.email,
       password: data.password,
       name: data.name,
     };
-    signIn(User);
+    try {
+      await signIn(User);
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+    } finally {
+      setLoading(false); // Desativa loading
+    }
   };
 
   const column = [
@@ -69,8 +78,10 @@ export default function Login() {
         form={'formLogin'}
         type={'submit'}
         className='w-[84%]'
-        placeholder='Entrar'
-      ></Button>
+        disabled={loading} // Desativa o botão durante o loading
+      >
+        {loading ? <ClipLoader size={25} color='white' /> : 'Entrar'}
+      </Button>
     </div>
   );
 }
