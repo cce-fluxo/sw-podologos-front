@@ -4,7 +4,6 @@ import { error } from 'console';
 import { createContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/services/axios';
-
 type signInData = {
   email: string;
   password: string;
@@ -40,7 +39,6 @@ export function AuthProvider({ children }: any) {
       }
     } catch (error) {
       console.log('Erro no signIn:', error);
-      console.log(error);
     }
   }
 

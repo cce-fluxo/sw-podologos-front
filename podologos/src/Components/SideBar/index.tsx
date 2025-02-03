@@ -14,9 +14,9 @@ export default function SideBar() {
   const [show, setShow] = useState(false);
   const [path, setpath] = useState(usePathname().split('/')[1]);
   const router = useRouter();
-  const signOut = useContext(AuthContext);
   const authContext = useContext<AuthContextType>(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
+  const { signOut } = useContext(AuthContext); // Obtém signOut do contexto
 
   const handleClick = () => {
     // Your logic here, for example:
@@ -30,7 +30,8 @@ export default function SideBar() {
     setIsOpen(false);
   }
   function Sair() {
-    setIsOpen(false);
+    signOut(); // Agora ele pode ser chamado
+    router.push('/Login');
   }
 
   return (
