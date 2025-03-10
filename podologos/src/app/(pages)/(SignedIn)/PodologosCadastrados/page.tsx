@@ -2,7 +2,6 @@
 import { CustomStyles } from '@/Components/TableStyle/index';
 import DataTable from 'react-data-table-component';
 import Image from 'next/image';
-import PacienteImage from '@/assets/PacienteImage.svg';
 import api from '@/services/axios';
 import { useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
@@ -10,38 +9,6 @@ import ReactLoading from 'react-loading';
 export default function PodologosCadastrados() {
   const [dadosPodologos, setDadosPodologos] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
-
-  const columns = [
-    {
-      name: 'Nome',
-      selector: (row: any) => (
-        <div className='flex items-center gap-2'>
-          <Image alt='' src={PacienteImage}></Image>
-          <p className='whitespace-nowrap'>Amaral Joaquim Cardoso</p>
-        </div>
-      ),
-    },
-    {
-      name: 'Formação',
-      selector: (row: any) => (
-        <p className='whitespace-nowrap'>
-          Superior em Podologia <br /> UFRJ/2022
-        </p>
-      ),
-    },
-    {
-      name: 'Email',
-      selector: (row: any) => 'amaraljoaquim@gmail.com',
-    },
-    {
-      name: 'Telefone',
-      selector: (row: any) => '(21) 12345-6789',
-    },
-    {
-      name: 'CEP',
-      selector: (row: any) => '12345-678',
-    },
-  ];
 
   const colunasTabela = [
     {
@@ -79,42 +46,6 @@ export default function PodologosCadastrados() {
     {
       name: 'CEP',
       selector: (row : any) => row.user.cep,
-    },
-  ];
-
-  const data = [
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
-    },
-    {
-      id: 1,
     },
   ];
 
