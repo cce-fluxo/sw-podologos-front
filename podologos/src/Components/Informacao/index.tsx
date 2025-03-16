@@ -4,7 +4,7 @@ interface InformacaoProps {
   imagem: any;
   numero: number;
   texto: string;
-  ultimoMes: string;
+  ultimoMes?: number | undefined;
   tresImagens?: boolean;
 }
 
@@ -12,7 +12,7 @@ export default function Informacao({
   imagem,
   numero,
   texto,
-  ultimoMes,
+  ultimoMes = undefined,
   tresImagens,
 }: InformacaoProps) {
   return (
@@ -32,9 +32,11 @@ export default function Informacao({
       </div>
       <p className='text-[20px] font-extrabold text-azul'>{numero}</p>
       <p className='font-semibold text-cinzaTexto'>{texto}</p>
-      <p className='text-[12px] font-semibold text-cinzaTextoClaro'>
-        {ultimoMes}
-      </p>
+      { ultimoMes !== undefined &&
+        <p className='text-[12px] font-semibold text-cinzaTextoClaro'>
+          {ultimoMes} no último mês
+        </p>
+      }
     </div>
   );
 }
