@@ -2,6 +2,7 @@ import Button from "@/Components/Button/button";
 import React from "react";
 import { ClipLoader } from "react-spinners";
 import Image from 'next/image';
+import Link from "next/link";
 
 export function ModalInfoPodologo({
   selectedDoctorInfo,
@@ -16,7 +17,7 @@ export function ModalInfoPodologo({
     }
   
     return(
-    <div className='absolute h-screen w-screen bg-[#00000031] z-50 flex items-center justify-center'>
+    <div className='absolute h-screen w-full bg-[#00000031] z-50 flex items-center justify-center'>
         <div className='flex flex-col items-center justify-center rounded-xl bg-white px-10 py-6'>
             <svg onClick={() => {
                 if (!loadingAceitarCadastro) {
@@ -34,27 +35,36 @@ export function ModalInfoPodologo({
             </svg>
             <h2 className='text-azul text-2xl font-bold mb-6'>Informações da solicitação</h2>
             <div className='flex flex-row items-center'>
-            {
-            /* Imagem */
-            }
-            {selectedDoctorInfo.user.profile_picture && <div className="w-44 h-44 relative mr-6">
-                <Image alt='' fill src={selectedDoctorInfo.user.profile_picture} className="object-cover rounded-full" />
+                {
+                /* Imagem */
+                }
+                {selectedDoctorInfo.user.profile_picture && 
+                <div className="w-44 h-44 relative mr-6">
+                    <Image alt='' fill src={selectedDoctorInfo.user.profile_picture} className="object-cover rounded-full" />
                 </div>}
-            {
-            /* Info Podologo */
-            }
-            <div className='flex flex-col'>
-                <p className='text-left text-cinzaTexto font-semibold'>{selectedDoctorInfo?.user.first_name + " " + selectedDoctorInfo?.user.last_name}</p>
-                <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.user.email}</p>
-                <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.user.phone_number}</p>
-                <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.user.cep}</p>
-                <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.degree_type + " em Podologia"}</p>
-                <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.institution + "/" + selectedDoctorInfo?.degree_year}</p>
+                {
+                /* Info Podologo */
+                }
+                <div className='flex flex-col'>
+                    <p className='text-left text-cinzaTexto font-semibold'>{selectedDoctorInfo?.user.first_name + " " + selectedDoctorInfo?.user.last_name}</p>
+                    <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.user.email}</p>
+                    <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.user.phone_number}</p>
+                    <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.user.cep}</p>
+                    <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.degree_type + " em Podologia"}</p>
+                    <p className='text-left text-cinzaTextoClaro'>{selectedDoctorInfo?.institution + "/" + selectedDoctorInfo?.degree_year}</p>
+                </div>
             </div>
+
+            {selectedDoctorInfo.degree_photo && 
+            <Link href={selectedDoctorInfo.degree_photo} rel="noopener noreferrer" target="_blank"> 
+            <div className="w-44 h-44 relative mt-2">
+                <Image alt='' fill src={selectedDoctorInfo.degree_photo} className="object-cover rounded-lg" />
             </div>
+            </Link>}
+
             {
             /* Botões */
-        }
+            }
             <Button 
             className='w-[85%] mt-6' 
             disabled={loadingAceitarCadastro} // Desativa o botão durante o loading
