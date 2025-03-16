@@ -12,6 +12,11 @@ export const CustomStyles = {
       minHeight: '64px',
       maxHeight: '64px',
       borderTopWidth: '1px',
+      transition: 'background-color 0.3s ease',
+      '&:hover': {
+        backgroundColor: '#ebebeb',
+        color: '#fff', // Optional: Change text color for better visibility
+      },
     },
   },
   headRow: {
