@@ -1,10 +1,10 @@
 'use client';
 import Image from 'next/image';
 import { useMediaQuery } from '@mantine/hooks';
-import Hamburguer from '@/assets/Hamburguer.svg';
+// import Hamburguer from '@/assets/Hamburguer.svg';
 import { useContext, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import LogOut from '@/assets/LogOut.svg';
+// import LogOut from '@/assets/LogOut.svg';
 import { AuthContext, AuthContextType } from '@/context/AuthContext';
 import Button from '../Button/button';
 import ModalSimNao from '../popUps/ModalSimNao';
@@ -36,7 +36,7 @@ export default function SideBar() {
 
   return (
     <>
-      <Image
+      {/* <Image
         src={Hamburguer}
         alt=''
         className='absolute left-5 top-[34px] -z-30'
@@ -48,7 +48,7 @@ export default function SideBar() {
         onClick={() => {
           setShow(!show);
         }}
-      />
+      /> */}
       <div
         id='sidebar'
         className='fixed z-40 flex h-full min-w-[100vw] flex-col bg-white px-8 shadow-lg shadow-cinza sm:static sm:min-w-[200px] lg:w-[clamp(250px,22vw,300px)] lg:min-w-[200px]'
@@ -116,7 +116,10 @@ export default function SideBar() {
             onClick={openModal}
             className='flex gap-2 bg-white text-black'
           >
-            <Image src={LogOut} alt=''></Image>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M16.5 17L21.5 12L16.5 7L15.09 8.41L17.67 11H8.5V13H17.67L15.09 15.59L16.5 17Z" fill="black"/>
+              <path d="M18.5 19H4.5V5H18.5V7H20.5V5C20.5 3.9 19.61 3 18.5 3H4.5C3.4 3 2.5 3.9 2.5 5V19C2.5 20.1 3.4 21 4.5 21H18.5C19.61 21 20.5 20.1 20.5 19V17H18.5V19Z" fill="black"/>
+            </svg>
             <p>Sair</p>
           </Button>
         </div>
