@@ -5,10 +5,14 @@ import Image from 'next/image';
 import api from '@/services/axios';
 import { useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
+import { ModalInfoPodologo } from '@/Components/popUps/ModalInfoPodologo';
 
 export default function PodologosCadastrados() {
   const [dadosPodologos, setDadosPodologos] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedDoctorInfo, setSelectedDoctorInfo] = useState();
+  const [loadingAceitarCadastro, setLoadingAceitarCadastro] = useState(false);
+  const [modalInfoPodologo, setModalInfoPodologo] = useState(false);
 
   const colunasTabela = [
     {
@@ -63,6 +67,12 @@ export default function PodologosCadastrados() {
     }
     setIsLoading(false);
   };
+
+  const handleRowClick = async (row: any) => {
+    console.log(row);
+    setSelectedDoctorInfo(row);
+    setModalInfoPodologo(true);
+  }
   
   useEffect(() => {
     if (isLoading && !dadosPodologos) {
@@ -71,26 +81,36 @@ export default function PodologosCadastrados() {
   });
 
   return (
-    <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
-      <h1 className='text-[30px] font-bold text-azul'>Podólogos cadastrados</h1>
-      {isLoading 
-      ?
-      <ReactLoading
-        type="spin"
-        color="#2087ed"
-        height={"30px"}
-        width={"30px"}
-        className='m-auto'
+    <>
+      <ModalInfoPodologo 
+        selectedDoctorInfo={selectedDoctorInfo}  
+        loadingAceitarCadastro={loadingAceitarCadastro}
+        visible={modalInfoPodologo}
+        fecharModal={setModalInfoPodologo}
       />
-      :
-      <div className='rounded-2xl shadow-lg shadow-cinza'>
-        <DataTable
-          responsive
-          columns={colunasTabela}
-          data={dadosPodologos}
-          customStyles={CustomStyles}
+      <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
+        <h1 className='text-[30px] font-bold text-azul'>Podólogos cadastrados</h1>
+        {isLoading 
+        ?
+        <ReactLoading
+          type="spin"
+          color="#2087ed"
+          height={"30px"}
+          width={"30px"}
+          className='m-auto'
         />
-      </div>}
-    </div>
+        :
+        <div className='rounded-2xl shadow-lg shadow-cinza'>
+          <DataTable
+            responsive
+            columns={colunasTabela}
+            data={dadosPodologos}
+            customStyles={CustomStyles}
+            onRowClicked={handleRowClick}
+            pointerOnHover
+          />
+        </div>}
+      </div>
+    </>
   );
 }

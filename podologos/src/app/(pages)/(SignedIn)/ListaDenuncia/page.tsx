@@ -6,17 +6,20 @@ import PacienteImage from '@/assets/PacienteImage.svg';
 import { useEffect, useState } from 'react';
 import api from '@/services/axios';
 import ReactLoading from 'react-loading';
+import { ModalInfoDenuncia } from '@/Components/popUps/ModalInfoDenuncia';
 
 export default function ListaDenuncia() {
   const [dadosDenuncias, setDadosDenuncias] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedDoctorInfo, setSelectedDoctorInfo] = useState();
+  const [selectedReportInfo, setSelectedReportInfo] = useState();
+  const [loadingExcluirPodologo, setLoadingExcluirPodologo] = useState(false);
+  const [modalInfoReport, setModalInfoReport] = useState(false);
 
   const colunasTabela = [
     {
       name: 'Usuário',
       selector: (row : any) => {
-        if (row.is_doctor_repot) {
+        if (row.is_doctor_report) {
           // Se um médico estiver sendo denunciado
           return (
             <div className='flex items-center gap-2'>
@@ -48,7 +51,7 @@ export default function ListaDenuncia() {
     {
       name: 'Denunciado por',
       selector: (row : any) => {
-        if (row.is_doctor_repot) {
+        if (row.is_doctor_report) {
           // Se um médico estiver sendo denunciado
           return (
             <div className='flex items-center gap-2'>
@@ -86,7 +89,8 @@ export default function ListaDenuncia() {
 
   const handleRowClick = async (row: any) => {
     console.log(row);
-    setSelectedDoctorInfo(row);
+    setSelectedReportInfo(row);
+    setModalInfoReport(true);
   }
 
   const buscarDenuncias = async () => {
@@ -111,28 +115,37 @@ export default function ListaDenuncia() {
   });
 
   return (
-    <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
-      <h1 className='text-[30px] font-bold text-azul'>Lista de denúncias</h1>
-      {isLoading 
-      ?
-      <ReactLoading
-        type="spin"
-        color="#2087ed"
-        height={"30px"}
-        width={"30px"}
-        className='m-auto'
+    <>
+      <ModalInfoDenuncia
+        selectedReportInfo={selectedReportInfo}  
+        loadingAceitarCadastro={loadingExcluirPodologo}
+        visible={modalInfoReport}
+        fecharModal={setModalInfoReport}
+        excluirPodologo={() => {}}
       />
-      :
-      <div className='rounded-2xl shadow-lg shadow-cinza'>
-        <DataTable
-          responsive
-          columns={colunasTabela}
-          data={dadosDenuncias}
-          customStyles={CustomStyles}
-          onRowClicked={handleRowClick}
-          pointerOnHover
+      <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
+        <h1 className='text-[30px] font-bold text-azul'>Lista de denúncias</h1>
+        {isLoading 
+        ?
+        <ReactLoading
+          type="spin"
+          color="#2087ed"
+          height={"30px"}
+          width={"30px"}
+          className='m-auto'
         />
-      </div>}
-    </div>
+        :
+        <div className='rounded-2xl shadow-lg shadow-cinza'>
+          <DataTable
+            responsive
+            columns={colunasTabela}
+            data={dadosDenuncias}
+            customStyles={CustomStyles}
+            onRowClicked={handleRowClick}
+            pointerOnHover
+          />
+        </div>}
+      </div>
+    </>
   );
 }

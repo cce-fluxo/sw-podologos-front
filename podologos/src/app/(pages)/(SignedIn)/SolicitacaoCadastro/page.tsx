@@ -109,6 +109,7 @@ export default function SolicitacaoCadastro() {
       visible={modalInfoPodologo}
       fecharModal={setModalInfoPodologo}
       autorizarPodologo={autorizarPodologo}
+      modalDeAceitarPodologo
     />
     <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
       <h1 className='text-[30px] font-bold text-azul'>
