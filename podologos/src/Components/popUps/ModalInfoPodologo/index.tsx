@@ -4,13 +4,25 @@ import { ClipLoader } from "react-spinners";
 import Image from 'next/image';
 import Link from "next/link";
 
+interface InfoPodologosProps {
+    selectedDoctorInfo: object;
+    loadingAceitarCadastro: boolean;
+    visible: boolean;
+    fecharModal: (boolean: boolean) => void;
+    autorizarPodologo?: () => void;
+    excluirPodologo?: () => void;
+    modalDeAceitarPodologo?: boolean;
+  }
+
 export function ModalInfoPodologo({
   selectedDoctorInfo,
   loadingAceitarCadastro,
   visible,
   fecharModal,
-  autorizarPodologo
-}) {
+  autorizarPodologo = () => {},
+  excluirPodologo = () => {},
+  modalDeAceitarPodologo = false,
+}: InfoPodologosProps) {
 
     if (!visible) {
         return (<></>);
@@ -65,30 +77,47 @@ export function ModalInfoPodologo({
             {
             /* Botões */
             }
+            {
+            modalDeAceitarPodologo 
+            ?
+            <>
+                <Button 
+                className='w-[85%] mt-6' 
+                disabled={loadingAceitarCadastro} // Desativa o botão durante o loading
+                onClick={() => autorizarPodologo()}
+                >
+                    {loadingAceitarCadastro ? <ClipLoader size={25} color='white' /> :
+                    <>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                        <path d="M9.29995 16.4L5.09995 12.2L3.69995 13.6L9.29995 19.2L21.3 7.20005L19.9 5.80005L9.29995 16.4Z" fill="#FBFBFB" />
+                    </svg>
+                    Aceitar cadastro
+                    </>}
+                </Button>
+
+                <Button
+                    className='w-[85%] mt-2 border-[1px] border-azul bg-white text-azul'
+                    onClick={() => fecharModal(false)}
+                    disabled={loadingAceitarCadastro}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                        <path d="M19.5 6.91L18.09 5.5L12.5 11.09L6.91 5.5L5.5 6.91L11.09 12.5L5.5 18.09L6.91 19.5L12.5 13.91L18.09 19.5L19.5 18.09L13.91 12.5L19.5 6.91Z" fill="#2087ED"/>
+                    </svg>
+                    Recusar cadastro
+                </Button>
+            </>
+            :
             <Button 
-            className='w-[85%] mt-6' 
-            disabled={loadingAceitarCadastro} // Desativa o botão durante o loading
-            onClick={() => autorizarPodologo()}
+                className='w-[85%] mt-6' 
+                disabled={loadingAceitarCadastro} // Desativa o botão durante o loading
+                onClick={() => autorizarPodologo()}
             >
                 {loadingAceitarCadastro ? <ClipLoader size={25} color='white' /> :
                 <>
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                    <path d="M9.29995 16.4L5.09995 12.2L3.69995 13.6L9.29995 19.2L21.3 7.20005L19.9 5.80005L9.29995 16.4Z" fill="#FBFBFB" />
-                </svg>
-                Aceitar cadastro
+                Excluir podólogo
                 </>}
             </Button>
-
-            <Button
-                className='w-[85%] mt-2 border-[1px] border-azul bg-white text-azul'
-                onClick={() => fecharModal(false)}
-                disabled={loadingAceitarCadastro}
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-                    <path d="M19.5 6.91L18.09 5.5L12.5 11.09L6.91 5.5L5.5 6.91L11.09 12.5L5.5 18.09L6.91 19.5L12.5 13.91L18.09 19.5L19.5 18.09L13.91 12.5L19.5 6.91Z" fill="#2087ED"/>
-                </svg>
-                Recusar cadastro
-            </Button>
+            }
         </div>
     </div>
     );
