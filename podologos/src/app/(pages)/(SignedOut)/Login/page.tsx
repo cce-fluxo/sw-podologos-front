@@ -45,10 +45,10 @@ export default function Login() {
     let isValid = true;
 
     if (!formData.email) {
-      newErrors.email = 'E-mail é obrigatório';
+      newErrors.email = 'Email é obrigatório';
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'E-mail inválido';
+      newErrors.email = 'Email inválido';
       isValid = false;
     }
 
@@ -90,8 +90,8 @@ export default function Login() {
       if (error.response?.status === 401) {
         setErrors(prev => ({
           ...prev,
-          email: 'E-mail ou senha inválidos',
-          password: 'E-mail ou senha inválidos'
+          email: 'Email ou senha inválidos',
+          password: 'Email ou senha inválidos'
         }));
       } else {
         alert('Erro ao fazer login. Tente novamente.');
@@ -109,7 +109,7 @@ export default function Login() {
 
   return (
     <div className='flex h-full w-full flex-col items-center justify-evenly'>
-      <h1 className='text-cinza_azulado text-[26px] font-[600]'>Login</h1>
+      <h1 className='text-cinza_azulado text-[26px] font-[400]'>Login</h1>
       
       <form 
         onSubmit={handleSubmit}
@@ -120,11 +120,11 @@ export default function Login() {
           {/* Campo Email */}
           <div className='flex flex-col gap-1'>
             <Input
-              label='E-mail'
+              label='Email'
               name='email'
               value={formData.email}
               onChange={handleChange}
-              placeholder='Digite seu e-mail'
+              placeholder='Digite seu email'
               error={errors.email}
               disabled={loading}
               required

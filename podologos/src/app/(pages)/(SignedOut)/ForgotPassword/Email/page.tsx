@@ -47,10 +47,10 @@ export default function EsqueciSenha() {
     let isValid = true;
 
     if (!formData.email) {
-      newErrors.email = 'E-mail é obrigatório';
+      newErrors.email = 'Email é obrigatório';
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'E-mail inválido';
+      newErrors.email = 'Email inválido';
       isValid = false;
     }
 
@@ -82,17 +82,17 @@ export default function EsqueciSenha() {
       if (error.response?.status === 404) {
         setErrors(prev => ({
           ...prev,
-          email: 'E-mail não encontrado em nossa base de dados'
+          email: 'Email não encontrado em nossa base de dados'
         }));
       } else if (error.response?.status === 400) {
         setErrors(prev => ({
           ...prev,
-          email: 'Formato de e-mail inválido'
+          email: 'Formato de email inválido'
         }));
       } else if (error.response?.status === 500) {
         alert('Erro no servidor. Tente novamente mais tarde.');
       } else {
-        alert('Erro ao enviar e-mail. Verifique sua conexão e tente novamente.');
+        alert('Erro ao enviar email. Verifique sua conexão e tente novamente.');
       }
     } finally {
       setLoading(false);
@@ -122,12 +122,12 @@ export default function EsqueciSenha() {
       >
         <div className='flex flex-col gap-4'>
           <Input
-            label='E-mail'
+            label='Email'
             type='email'
             name='email'
             value={formData.email}
             onChange={handleChange}
-            placeholder='Digite seu e-mail cadastrado'
+            placeholder='Digite seu email cadastrado'
             error={errors.email}
             disabled={loading}
             required

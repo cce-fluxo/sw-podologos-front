@@ -73,7 +73,7 @@ export default function InsiraCodigo() {
       </h1>
       
       <p className='w-[84%] text-center font-[400] mb-6'>
-        Digite o código de 6 dígitos que enviamos para o seu e-mail
+        Digite o código de 6 dígitos que enviamos para o seu email
       </p>
       
       <form 
