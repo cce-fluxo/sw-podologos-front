@@ -138,12 +138,12 @@ export default function ListaDenuncia() {
     try {
       let endpoint = '';
       let mensagem = '';
-      
+      console.log('ID do reporte', selectedReportInfo)
       if (acaoTipo === 'excluir_podologo') {
-        endpoint = `/doctor/${selectedReportInfo.doctor_id}`;
+        endpoint = `/doctor/delete/${selectedReportInfo.doctor_id}`;
         mensagem = 'Podólogo excluído com sucesso!';
       } else {
-        endpoint = `/report/${selectedReportInfo.id}`;
+        endpoint = `/report/delete/${selectedReportInfo.report_id}`;
         mensagem = 'Denúncia excluída com sucesso!';
       }
       
