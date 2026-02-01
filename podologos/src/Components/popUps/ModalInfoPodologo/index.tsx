@@ -8,8 +8,8 @@ interface DadosPodologo {
     degree_type: string;
     institution: string;
     degree_year: string;
-    doctor_id: string;
     degree_photo: string;
+    doctor_id: string;
     user: {
         profile_picture: string;
         first_name: string;
@@ -21,12 +21,11 @@ interface DadosPodologo {
 }
 
 interface InfoPodologosProps {
-    selectedDoctorInfo: DadosPodologo | null;
-    loadingAceitarCadastro?: boolean;
+    selectedDoctorInfo: DadosPodologo;
+    loadingAceitarCadastro: boolean;
     visible: boolean;
     fecharModal: (boolean: boolean) => void;
     autorizarPodologo?: () => void;
-    recusarPodologo?: () => void;
     excluirPodologo?: () => void;
     modalDeAceitarPodologo?: boolean;
 }
@@ -37,7 +36,7 @@ export function ModalInfoPodologo({
     visible,
     fecharModal,
     autorizarPodologo = () => {},
-    recusarPodologo = () => {},
+    excluirPodologo = () => {},
     modalDeAceitarPodologo = false,
 }: InfoPodologosProps) {
 
@@ -46,8 +45,19 @@ export function ModalInfoPodologo({
     }
 
     return(
-    <div className='fixed inset-0 h-screen w-full bg-[#00000031] z-40 flex items-center justify-center'>
-        <div className='flex flex-col items-center justify-center rounded-xl bg-white px-10 py-6'>
+    <>
+      {/* Overlay escuro */}
+        <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => fecharModal(false)}
+        />
+        
+        {/* Modal */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div 
+            className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+            >
             <svg onClick={() => {
                 if (!loadingAceitarCadastro) {
                     fecharModal(false)
@@ -67,7 +77,7 @@ export function ModalInfoPodologo({
                 {
                 /* Imagem */
                 }
-                {selectedDoctorInfo?.user.profile_picture && 
+                {selectedDoctorInfo.user.profile_picture && 
                 <div className="w-44 h-44 relative mr-6">
                     <Image alt='' fill src={selectedDoctorInfo.user.profile_picture} className="object-cover rounded-full" />
                 </div>}
@@ -92,7 +102,7 @@ export function ModalInfoPodologo({
             ?
             <>
 
-                {selectedDoctorInfo?.degree_photo && 
+                {selectedDoctorInfo.degree_photo && 
                 <Link href={selectedDoctorInfo.degree_photo} rel="noopener noreferrer" target="_blank"> 
                 <div className="w-44 h-44 relative mt-2">
                     <Image alt='' fill src={selectedDoctorInfo.degree_photo} className="object-cover rounded-lg" />
@@ -115,7 +125,7 @@ export function ModalInfoPodologo({
 
                 <Button
                     className='w-[85%] mt-2 border-[1px] border-azul bg-white text-azul'
-                    onClick={() => recusarPodologo()}
+                    onClick={() => fecharModal(false)}
                     disabled={loadingAceitarCadastro}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
@@ -129,6 +139,6 @@ export function ModalInfoPodologo({
             }
         </div>
     </div>
+    </>
     );
 }
-  

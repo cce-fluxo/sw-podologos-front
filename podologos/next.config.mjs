@@ -6,11 +6,6 @@ const nextConfig = {
           protocol: 'https',
           hostname: 'res.cloudinary.com', // Permite carregar imagens do Cloudinary
         },
-        {
-          protocol: 'https',
-          hostname: 'google.com', // Permite carregar imagens do Google
-        },
-        // Adicione outros domínios conforme necessário
       ],
     },
     typescript: {
