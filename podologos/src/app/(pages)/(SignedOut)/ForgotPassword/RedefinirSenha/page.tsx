@@ -92,7 +92,7 @@ export default function RedefinirSenha() {
 
   return (
     <div className='flex h-full w-full flex-col items-center justify-evenly'>
-      <h1 className='text-cinza_azulado text-[26px] font-[600]'>
+      <h1 className='text-cinza_azulado text-[26px] font-[400]'>
         Redefinir Senha
       </h1>
       

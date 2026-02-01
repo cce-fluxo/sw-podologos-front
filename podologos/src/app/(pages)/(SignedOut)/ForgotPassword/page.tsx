@@ -94,11 +94,11 @@ export default function EsqueciSenha() {
 
   return (
     <div className='flex h-full w-full flex-col items-center justify-evenly'>
-      <h1 className='text-cinza_azulado text-[26px] font-[600]'>
+      <h1 className='text-cinza_azulado text-[26px] font-[400]'>
         Esqueci minha senha
       </h1>
       
-      <p className='w-[84%] text-center font-[400] mb-6'>
+      <p className='w-[84%] text-center font-[400] mb-6 text-cinzaTexto'>
         Informe o email cadastrado e um email com as instruções de recuperação
         será enviado.
       </p>
