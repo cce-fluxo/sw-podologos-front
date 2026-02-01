@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import api from '@/services/axios';
 import ReactLoading from 'react-loading';
-import Button from '@/Components/Button/button';
 import { ModalInfoPodologo } from '@/Components/popUps/ModalInfoPodologo';
 
 export default function SolicitacaoCadastro() {
@@ -101,41 +100,56 @@ export default function SolicitacaoCadastro() {
     }
   });
 
+  // Componente customizado para quando não há dados
+  const CustomNoDataComponent = () => (
+    <div className="p-6 text-center">
+      <div className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-gray-100">
+        <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma solicitação</h3>
+      <p className="text-gray-500">Não há solicitações de cadastro pendentes no momento.</p>
+    </div>
+  );
+
   return (
     <>
-    <ModalInfoPodologo 
-      selectedDoctorInfo={selectedDoctorInfo}  
-      loadingAceitarCadastro={loadingAceitarCadastro}
-      visible={modalInfoPodologo}
-      fecharModal={setModalInfoPodologo}
-      autorizarPodologo={autorizarPodologo}
-      modalDeAceitarPodologo
-    />
-    <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
-      <h1 className='text-[30px] font-bold text-azul'>
-        Solicitações de cadastro
-      </h1>
-      {isLoading 
-      ?
-      <ReactLoading
-        type="spin"
-        color="#2087ed"
-        height={"30px"}
-        width={"30px"}
-        className='m-auto'
+      <ModalInfoPodologo 
+        selectedDoctorInfo={selectedDoctorInfo}  
+        loadingAceitarCadastro={loadingAceitarCadastro}
+        visible={modalInfoPodologo}
+        fecharModal={setModalInfoPodologo}
+        autorizarPodologo={autorizarPodologo}
+        modalDeAceitarPodologo
       />
-      :
-      <div className='rounded-2xl shadow-lg shadow-cinza'>
-        <DataTable
-          responsive
-          columns={colunasTabela}
-          data={dadosPodologos}
-          customStyles={CustomStyles}
-          onRowClicked={handleRowClick}
-          pointerOnHover
-        />
-        </div>}
-    </div>
+      <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
+        <h1 className='text-[30px] font-bold text-azul'>
+          Solicitações de cadastro
+        </h1>
+        {isLoading 
+          ?
+          <ReactLoading
+            type="spin"
+            color="#2087ed"
+            height={"30px"}
+            width={"30px"}
+            className='m-auto'
+          />
+          :
+          <div className='rounded-2xl shadow-lg shadow-cinza'>
+            <DataTable
+              responsive
+              columns={colunasTabela}
+              noDataComponent={<CustomNoDataComponent />}
+              data={dadosPodologos}
+              customStyles={CustomStyles}
+              onRowClicked={handleRowClick}
+              pointerOnHover
+            />
+          </div>
+        }
+      </div>
     </>
   );
 }

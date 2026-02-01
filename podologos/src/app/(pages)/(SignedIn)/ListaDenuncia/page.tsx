@@ -114,6 +114,19 @@ export default function ListaDenuncia() {
     }
   });
 
+  // Componente customizado para quando não há dados
+  const CustomNoDataComponent = () => (
+    <div className="p-6 text-center">
+      <div className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-gray-100">
+        <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma denúncia</h3>
+      <p className="text-gray-500">Nenhum usuário fez uma denúncia no momento.</p>
+    </div>
+  );
+
   return (
     <>
       <ModalInfoDenuncia
@@ -138,6 +151,7 @@ export default function ListaDenuncia() {
         <div className='rounded-2xl shadow-lg shadow-cinza'>
           <DataTable
             responsive
+            noDataComponent={<CustomNoDataComponent />}
             columns={colunasTabela}
             data={dadosDenuncias}
             customStyles={CustomStyles}
