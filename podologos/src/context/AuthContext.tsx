@@ -12,7 +12,10 @@ type signInData = {
 export type AuthContextType = {
   isAuthenticated: boolean;
   signIn: (data: signInData) => Promise<void>;
-  user: any;
+  user: {
+    email: string;
+    name: string
+  } | null;
   signOut: () => void;
 };
 export const AuthContext = createContext({} as AuthContextType);
@@ -32,8 +35,8 @@ export function AuthProvider({ children }: any) {
       if (response) {
         localStorage.setItem('token', response.token);
         setToken(response.token);
+        setUser(response.data)
         await getAdmin();
-        // router.push('/PodologosCadastrados');
       } else {
         console.log('Usuário não encontrado (tratamento)');
       }

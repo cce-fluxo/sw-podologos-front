@@ -1,8 +1,6 @@
 import Button from "@/Components/Button/button";
 import React from "react";
-import { ClipLoader } from "react-spinners";
 import Image from 'next/image';
-import Link from "next/link";
 
 interface InfoPodologosProps {
     selectedUserInfo: object;
@@ -21,7 +19,7 @@ export function ModalApenasInfoUser({
     }
   
     return(
-    <div className='fixed inset-0 h-screen w-full bg-[#00000031] z-40 flex items-center justify-center'>
+    <div className='absolute h-screen w-full bg-[#00000031] z-50 flex items-center justify-center'>
         <div className='flex flex-col items-center justify-center rounded-xl bg-white px-10 py-6'>
             <svg onClick={() => fecharModal(false)} 
                 className='ml-auto cursor-pointer' 

@@ -4,30 +4,47 @@ import { ClipLoader } from "react-spinners";
 import Image from 'next/image';
 import Link from "next/link";
 
+interface DadosPodologo {
+    degree_type: string;
+    institution: string;
+    degree_year: string;
+    doctor_id: string;
+    degree_photo: string;
+    user: {
+        profile_picture: string;
+        first_name: string;
+        last_name: string;
+        phone_number: string;
+        email: string;
+        cep: string
+    }
+}
+
 interface InfoPodologosProps {
-    selectedDoctorInfo: object;
-    loadingAceitarCadastro: boolean;
+    selectedDoctorInfo: DadosPodologo | null;
+    loadingAceitarCadastro?: boolean;
     visible: boolean;
     fecharModal: (boolean: boolean) => void;
     autorizarPodologo?: () => void;
+    recusarPodologo?: () => void;
     excluirPodologo?: () => void;
     modalDeAceitarPodologo?: boolean;
-  }
+}
 
 export function ModalInfoPodologo({
-  selectedDoctorInfo,
-  loadingAceitarCadastro,
-  visible,
-  fecharModal,
-  autorizarPodologo = () => {},
-  excluirPodologo = () => {},
-  modalDeAceitarPodologo = false,
+    selectedDoctorInfo,
+    loadingAceitarCadastro,
+    visible,
+    fecharModal,
+    autorizarPodologo = () => {},
+    recusarPodologo = () => {},
+    modalDeAceitarPodologo = false,
 }: InfoPodologosProps) {
 
     if (!visible) {
         return (<></>);
     }
-  
+
     return(
     <div className='fixed inset-0 h-screen w-full bg-[#00000031] z-40 flex items-center justify-center'>
         <div className='flex flex-col items-center justify-center rounded-xl bg-white px-10 py-6'>
@@ -50,7 +67,7 @@ export function ModalInfoPodologo({
                 {
                 /* Imagem */
                 }
-                {selectedDoctorInfo.user.profile_picture && 
+                {selectedDoctorInfo?.user.profile_picture && 
                 <div className="w-44 h-44 relative mr-6">
                     <Image alt='' fill src={selectedDoctorInfo.user.profile_picture} className="object-cover rounded-full" />
                 </div>}
@@ -75,7 +92,7 @@ export function ModalInfoPodologo({
             ?
             <>
 
-                {selectedDoctorInfo.degree_photo && 
+                {selectedDoctorInfo?.degree_photo && 
                 <Link href={selectedDoctorInfo.degree_photo} rel="noopener noreferrer" target="_blank"> 
                 <div className="w-44 h-44 relative mt-2">
                     <Image alt='' fill src={selectedDoctorInfo.degree_photo} className="object-cover rounded-lg" />
@@ -98,7 +115,7 @@ export function ModalInfoPodologo({
 
                 <Button
                     className='w-[85%] mt-2 border-[1px] border-azul bg-white text-azul'
-                    onClick={() => fecharModal(false)}
+                    onClick={() => recusarPodologo()}
                     disabled={loadingAceitarCadastro}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">

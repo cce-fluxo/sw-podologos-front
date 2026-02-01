@@ -10,13 +10,36 @@ import { ModalApenasInfoUser } from '@/Components/popUps/ModalApenasInfoUser';
 import ModalSimNao from '@/Components/popUps/ModalSimNao';
 import ModalCheck from '@/Components/popUps/ModalCheck';
 
+interface DadosDenuncia {
+  report_id: string;
+  doctor_id: string;
+  patient_id: string;
+  reason: string;
+  is_doctor_report: string;
+  CreatedAt: string;
+  doctor: {
+    user: {
+      last_name: string;
+      first_name: string;
+      profile_picture: string;
+    }
+  };
+  patient: {
+    user: {
+      last_name: string;
+      first_name: string;
+      profile_picture: string;
+    }
+  }
+}
+
 export default function ListaDenuncia() {
   // Estados para dados e loading
-  const [dadosDenuncias, setDadosDenuncias] = useState<any>();
+  const [dadosDenuncias, setDadosDenuncias] = useState<DadosDenuncia[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   // Estados para os modais
-  const [selectedReportInfo, setSelectedReportInfo] = useState<any>(null);
+  const [selectedReportInfo, setSelectedReportInfo] = useState<DadosDenuncia | null>(null);
   const [selectedUserInfo, setSelectedUserInfo] = useState<any>(null);
   
   // Visibilidade dos modais
@@ -48,7 +71,7 @@ export default function ListaDenuncia() {
                 </div>
               )}
               <div className='flex flex-col'>
-                <p className='whitespace-nowrap'>{row.doctor?.user?.first_name || ''} {row.doctor?.user?.last_name || ''}</p>
+                <p className='whitespace-nowrap'>{row.doctor?.user?.first_name || 'Não'} {row.doctor?.user?.last_name || 'encontrado'}</p>
                 <p className='whitespace-nowrap text-xs text-[#A4AAB2]'>Podólogo</p>
               </div>
             </div>
@@ -67,7 +90,7 @@ export default function ListaDenuncia() {
               </div>
             )}
             <div className='flex flex-col'>
-              <p className='whitespace-nowrap'>{row.patient?.user?.first_name || ''} {row.patient?.user?.last_name || ''}</p>
+              <p className='whitespace-nowrap'>{row.patient?.user?.first_name || 'Não'} {row.patient?.user?.last_name || 'encontrado'}</p>
               <p className='whitespace-nowrap text-xs text-[#A4AAB2]'>Paciente</p>
             </div>
           </div>
@@ -91,7 +114,7 @@ export default function ListaDenuncia() {
                 </div>
               )}
               <div className='flex flex-col'>
-                <p className='whitespace-nowrap'>{row.patient?.user?.first_name || ''} {row.patient?.user?.last_name || ''}</p>
+                <p className='whitespace-nowrap'>{row.patient?.user?.first_name || 'Não'} {row.patient?.user?.last_name || 'encontrado'}</p>
                 <p className='whitespace-nowrap text-xs text-[#A4AAB2]'>Paciente</p>
               </div>
             </div>
@@ -110,7 +133,7 @@ export default function ListaDenuncia() {
               </div>
             )}
             <div className='flex flex-col'>
-              <p className='whitespace-nowrap'>{row.doctor?.user?.first_name || ''} {row.doctor?.user?.last_name || ''}</p>
+              <p className='whitespace-nowrap'>{row.doctor?.user?.first_name || 'Não'} {row.doctor?.user?.last_name || 'encontrado'}</p>
               <p className='whitespace-nowrap text-xs text-[#A4AAB2]'>Podólogo</p>
             </div>
           </div>
@@ -208,6 +231,7 @@ export default function ListaDenuncia() {
     setIsLoading(true);
     try {
       const response = await api.get('/report');
+      console.log(response.data)
       setDadosDenuncias(response.data);
     } catch (err: any) {
       console.error('Erro ao buscar denúncias:', err);
@@ -216,10 +240,8 @@ export default function ListaDenuncia() {
   };
 
   useEffect(() => {
-    if (isLoading && !dadosDenuncias) {
-      buscarDenuncias();
-    }
-  }, [isLoading, dadosDenuncias]);
+    buscarDenuncias();
+  }, []);
 
   // Textos para o modal de confirmação baseados no tipo de ação
   const getTextoConfirmacao = () => {

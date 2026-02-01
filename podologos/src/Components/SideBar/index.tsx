@@ -16,12 +16,8 @@ export default function SideBar() {
   const router = useRouter();
   const authContext = useContext<AuthContextType>(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
-  const { signOut } = useContext(AuthContext); // Obtém signOut do contexto
+  const { signOut, user } = useContext(AuthContext); // Obtém signOut do contexto
 
-  const handleClick = () => {
-    // Your logic here, for example:
-    authContext.signOut();
-  };
   function openModal() {
     setIsOpen(true);
   }
@@ -59,7 +55,7 @@ export default function SideBar() {
       >
         <h1 className='mt-20 text-2xl font-bold'>
           Bem-vindo <br />
-          Gustavo
+          {user?.name}
         </h1>
         <div className='mt-8 flex flex-col gap-4'>
           <button

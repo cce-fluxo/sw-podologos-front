@@ -6,11 +6,28 @@ import { useEffect, useState } from 'react';
 import api from '@/services/axios';
 import ReactLoading from 'react-loading';
 import { ModalInfoPodologo } from '@/Components/popUps/ModalInfoPodologo';
+import { toast } from 'react-toastify';
+
+interface DadosPodologo {
+  degree_type: string;
+  institution: string;
+  degree_year: string;
+  degree_photo: string;
+  doctor_id: string;
+  user: {
+    profile_picture: string;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    email: string;
+    cep: string
+  }
+}
 
 export default function SolicitacaoCadastro() {
-  const [dadosPodologos, setDadosPodologos] = useState<any>();
+  const [dadosPodologos, setDadosPodologos] = useState<DadosPodologo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedDoctorInfo, setSelectedDoctorInfo] = useState();
+  const [selectedDoctorInfo, setSelectedDoctorInfo] = useState<DadosPodologo | null>(null);
   const [loadingAceitarCadastro, setLoadingAceitarCadastro] = useState(false);
   const [modalInfoPodologo, setModalInfoPodologo] = useState(false);
 
@@ -83,7 +100,7 @@ export default function SolicitacaoCadastro() {
       }
       const response = await api.patch(`/doctor/autorizar-medico/${selectedDoctorInfo.doctor_id}`);
       setModalInfoPodologo(false);
-      setSelectedDoctorInfo(undefined);
+      setSelectedDoctorInfo(null);
       buscarPodologos();
       console.log(response.data);
     } catch (err: any) {
@@ -94,11 +111,29 @@ export default function SolicitacaoCadastro() {
     setLoadingAceitarCadastro(false);
   };
   
-  useEffect(() => {
-    if (isLoading && !dadosPodologos) {
-      buscarPodologos();
+  const recusarPodologo = async () => {
+    setLoadingAceitarCadastro(true);
+    try {
+      if (!selectedDoctorInfo) {
+        throw new Error('Selecione um médico');
+      }
+      // const response = await api.patch(`/doctor/autorizar-medico/${selectedDoctorInfo.doctor_id}`);
+      // setModalInfoPodologo(false);
+      // setSelectedDoctorInfo(null);
+      // buscarPodologos();
+      // console.log(response.data);
+      toast.error('Pendência. Ainda não implementado. Necessidade de discussão')
+    } catch (err: any) {
+      console.log(err);
+      console.log(err.response.data);
+      console.log(err.response.status);
     }
-  });
+    setLoadingAceitarCadastro(false);
+  };
+  
+  useEffect(() => {
+      buscarPodologos();
+  }, []);
 
   // Componente customizado para quando não há dados
   const CustomNoDataComponent = () => (
@@ -121,6 +156,7 @@ export default function SolicitacaoCadastro() {
         visible={modalInfoPodologo}
         fecharModal={setModalInfoPodologo}
         autorizarPodologo={autorizarPodologo}
+        recusarPodologo={recusarPodologo}
         modalDeAceitarPodologo
       />
       <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
@@ -139,13 +175,31 @@ export default function SolicitacaoCadastro() {
           :
           <div className='rounded-2xl shadow-lg shadow-cinza'>
             <DataTable
-              responsive
               columns={colunasTabela}
               noDataComponent={<CustomNoDataComponent />}
               data={dadosPodologos}
               customStyles={CustomStyles}
               onRowClicked={handleRowClick}
+              pagination
+              paginationPerPage={8}
+              paginationRowsPerPageOptions={[8, 20, 30, 50]}
+              progressPending={isLoading}
+              progressComponent={
+                  <div className="flex justify-center items-center p-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-azul"></div>
+                  </div>
+              }
+              striped
+              highlightOnHover
               pointerOnHover
+              responsive
+              dense={false}
+              paginationComponentOptions={{
+                  rowsPerPageText: 'Linhas por página:',
+                  rangeSeparatorText: 'de',
+                  noRowsPerPage: false,
+                  selectAllRowsItem: false,
+              }}
             />
           </div>
         }

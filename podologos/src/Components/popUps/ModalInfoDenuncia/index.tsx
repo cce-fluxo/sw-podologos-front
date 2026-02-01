@@ -3,8 +3,31 @@ import React from "react";
 import { ClipLoader } from "react-spinners";
 import Image from 'next/image';
 
+interface DadosDenuncia {
+    report_id: string;
+    doctor_id: string;
+    patient_id: string;
+    reason: string;
+    is_doctor_report: string;
+    CreatedAt: string;
+    patient: {
+        user: {
+            first_name: string;
+            last_name: string;
+            profile_picture: string
+        }
+    };
+    doctor: {
+        user: {
+            first_name: string;
+            last_name: string;
+            profile_picture: string
+        }
+    }
+}
+
 interface InfoDenunciaProps {
-    selectedReportInfo: any;
+    selectedReportInfo: DadosDenuncia;
     loadingExcluir: boolean;
     visible: boolean;
     fecharModal: (boolean: boolean) => void;

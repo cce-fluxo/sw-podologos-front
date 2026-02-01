@@ -12,6 +12,7 @@ export async function SignInRequest({ email, password }: User) {
     const user = { email, password };
     const response = await api.post('auth/admin/signin', user);
     toast.success('Login realizado com sucesso!');
+    console.log('Loguei', response.data)
     return response.data;
   } catch (error) {
     toast.error('Erro ao fazer login. Verifique suas credenciais.');

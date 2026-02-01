@@ -9,6 +9,17 @@ import { useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
 import api from '@/services/axios';
 
+interface InformacoesSobreOApp {
+  numeroUsuarios: { _all: 0, patient_id: 0, doctor_id: 0 },
+  numeroUsuarioUltimoMes: { _all: 0, patient_id: 0, doctor_id: 0 },
+  consultasAceitas: 0,
+  consultasAceitasUltimoMes: 0,
+  consultasConcluidas: 0,
+  consultasConcluidasUltimoMes: 0,
+  podologosExcelentes: 0,
+  podologosRuins: 0
+}
+
 export default function Informacoes() {
   const [isLoading, setIsLoading] = useState(false);
   const [jaObteveDados, setJaObteveDados] = useState(false);

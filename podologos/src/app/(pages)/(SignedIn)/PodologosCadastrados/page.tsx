@@ -7,10 +7,26 @@ import { useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
 import { ModalInfoPodologo } from '@/Components/popUps/ModalInfoPodologo';
 
+interface DadosPodologo {
+  degree_type: string;
+  institution: string;
+  degree_year: string;
+  degree_photo: string;
+  doctor_id: string;
+  user: {
+    profile_picture: string;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    email: string;
+    cep: string
+  }
+}
+
 export default function PodologosCadastrados() {
-  const [dadosPodologos, setDadosPodologos] = useState<any>();
+  const [dadosPodologos, setDadosPodologos] = useState<DadosPodologo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedDoctorInfo, setSelectedDoctorInfo] = useState();
+  const [selectedDoctorInfo, setSelectedDoctorInfo] = useState<DadosPodologo | null>(null);
   const [loadingAceitarCadastro, setLoadingAceitarCadastro] = useState(false);
   const [modalInfoPodologo, setModalInfoPodologo] = useState(false);
 
@@ -58,6 +74,7 @@ export default function PodologosCadastrados() {
     setIsLoading(true);
     try {
       const response = await api.get('/doctor/medicos-autorizados');
+      console.log(response.data)
       setDadosPodologos(response.data);
       console.log(response.data);
     } catch (err: any) {
@@ -75,10 +92,8 @@ export default function PodologosCadastrados() {
   }
   
   useEffect(() => {
-    if (isLoading && !dadosPodologos) {
-      buscarPodologos();
-    }
-  });
+    buscarPodologos();
+  }, []);
 
   // Componente customizado para quando não há dados
   const CustomNoDataComponent = () => (
