@@ -33,7 +33,7 @@ export function AuthProvider({ children }: any) {
         localStorage.setItem('token', response.token);
         setToken(response.token);
         await getAdmin();
-        router.push('/PodologosCadastrados');
+        // router.push('/PodologosCadastrados');
       } else {
         console.log('Usuário não encontrado (tratamento)');
       }
@@ -47,6 +47,7 @@ export function AuthProvider({ children }: any) {
       const response = await api.get('/admin');
       const data = response.data;
       console.log(data);
+      setUser(data);
       return data;
     } catch (error) {
       console.log('Erro ao encontrar o usuário:', error);

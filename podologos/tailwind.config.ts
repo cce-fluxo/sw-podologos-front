@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-lexend)', 'system-ui', 'sans-serif'],
+        lexend: ['var(--font-lexend)', 'sans-serif'],
+      },
       colors: {
         azul: '#2087ED',
         cinza: '#C3C5C7',
@@ -22,6 +26,25 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addUtilities }: any) {
+      addUtilities({
+        '.hide-password-toggle': {
+          '&::-ms-reveal': {
+            display: 'none',
+          },
+          '&::-ms-clear': {
+            display: 'none',
+          },
+          '&::-webkit-contacts-auto-fill-button': {
+            display: 'none !important',
+          },
+          '&::-webkit-credentials-auto-fill-button': {
+            display: 'none !important',
+          },
+        }
+      })
+    }
+  ],
 };
 export default config;

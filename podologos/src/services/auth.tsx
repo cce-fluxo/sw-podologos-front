@@ -1,5 +1,5 @@
 import api from './axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 type User = {
@@ -10,7 +10,7 @@ type User = {
 export async function SignInRequest({ email, password }: User) {
   try {
     const user = { email, password };
-    const response = await api.post('auth/admin/signin', user, { cors: true });
+    const response = await api.post('auth/admin/signin', user);
     toast.success('Login realizado com sucesso!');
     return response.data;
   } catch (error) {

@@ -1,84 +1,163 @@
 'use client';
 import React, { useContext, useState } from 'react';
-import {
-  GenericField,
-  GenericPasswordField,
-} from '@/Components/FormData/Input/index';
 import Link from 'next/link';
 import Button from '@/Components/Button/button';
-import { FormData } from '@/Components/FormData';
-import { Router } from 'next/router';
 import { AuthContext } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { ClipLoader } from 'react-spinners';
+import PasswordInput from '@/Components/Inputs/PasswordInput';
+import Input from '@/Components/Inputs/Input';
 
 export default function Login() {
   const { signIn } = useContext(AuthContext);
   const router = useRouter();
-  const [loading, setLoading] = useState(false); // Estado para loading
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    name: '',
+  });
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+  });
 
-  const onSubmit = async (data: any) => {
-    setLoading(true); // Ativa loading
-    const User = {
-      email: data.email,
-      password: data.password,
-      name: data.name,
-    };
-    try {
-      await signIn(User);
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-    } finally {
-      setLoading(false); // Desativa loading
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Limpa erro do campo quando o usuário começa a digitar
+    if (errors[name as keyof typeof errors]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
     }
   };
 
-  const column = [
-    {
-      name: 'email',
-      label: 'E-mail',
-      component: GenericField,
-    },
-    {
-      name: 'password',
-      label: 'password',
-      component: GenericPasswordField,
-    },
-  ];
+  const validateForm = () => {
+    const newErrors = {
+      email: '',
+      password: '',
+    };
+    let isValid = true;
 
-  const data = {
-    name: 'Felipe',
-    email: '',
-    password: '',
+    if (!formData.email) {
+      newErrors.email = 'E-mail é obrigatório';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'E-mail inválido';
+      isValid = false;
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Senha é obrigatória';
+      isValid = false;
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
+
+  const handleSubmit = async () => {
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const User = {
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+      };
+      console.log('Clicou', User)
+      
+      await signIn(User);
+
+      router.push('/PodologosCadastrados')
+    } catch (error: any) {
+      console.error('Erro ao fazer login:', error);
+      
+      // Tratamento de erros específicos da API
+      if (error.response?.status === 401) {
+        setErrors(prev => ({
+          ...prev,
+          email: 'E-mail ou senha inválidos',
+          password: 'E-mail ou senha inválidos'
+        }));
+      } else {
+        alert('Erro ao fazer login. Tente novamente.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função específica para o clique no botão
+  const handleButtonClick = () => {
+    handleSubmit();
+  };
+
 
   return (
     <div className='flex h-full w-full flex-col items-center justify-evenly'>
       <h1 className='text-cinza_azulado text-[26px] font-[600]'>Login</h1>
-      <FormData.Root
-        initialValues={data}
-        className='flex h-auto w-[84%] gap-8'
-        onSubmit={onSubmit}
+      
+      <form 
+        onSubmit={handleSubmit}
+        className='flex h-auto w-[84%] flex-col gap-6'
+        id='formLogin'
       >
-        <FormData.Form
-          columns={column}
-          id='formLogin'
-          className='flex w-full flex-1 flex-col gap-4'
+        <div className='flex flex-col gap-4'>
+          {/* Campo Email */}
+          <div className='flex flex-col gap-1'>
+            <Input
+              label='E-mail'
+              name='email'
+              value={formData.email}
+              onChange={handleChange}
+              placeholder='Digite seu e-mail'
+              error={errors.email}
+              disabled={loading}
+              required
+            />
+          </div>
+
+          {/* Campo Senha */}
+          <div className='flex flex-col gap-1'>
+            <PasswordInput
+              label='Senha'
+              name='password'
+              value={formData.password}
+              onChange={handleChange}
+              placeholder='Digite sua senha'
+              error={errors.password}
+              disabled={loading}
+              required
+            />
+          </div>
+        </div>
+
+        <Link
+          href={'/ForgotPassword'}
+          className='mt-[-10px] self-center'
         >
-          <Link
-            href={'/ForgotPassword/Email'}
-            className='mt-[-15px] self-center'
-          >
-            <p className='text-azul'>Esqueci minha senha</p>
-          </Link>
-        </FormData.Form>
-      </FormData.Root>
+          <p className='text-azul hover:underline'>Esqueci minha senha</p>
+        </Link>
+      </form>
 
       <Button
-        form={'formLogin'}
-        type={'submit'}
+        onClick={handleButtonClick}
         className='w-[84%]'
-        disabled={loading} // Desativa o botão durante o loading
+        disabled={loading}
       >
         {loading ? <ClipLoader size={25} color='white' /> : 'Entrar'}
       </Button>
