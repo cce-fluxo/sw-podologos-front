@@ -10,106 +10,99 @@ import ReactLoading from 'react-loading';
 import api from '@/services/axios';
 
 interface InformacoesSobreOApp {
-  numeroUsuarios: { _all: 0, patient_id: 0, doctor_id: 0 },
-  numeroUsuarioUltimoMes: { _all: 0, patient_id: 0, doctor_id: 0 },
-  consultasAceitas: 0,
-  consultasAceitasUltimoMes: 0,
-  consultasConcluidas: 0,
-  consultasConcluidasUltimoMes: 0,
-  podologosExcelentes: 0,
-  podologosRuins: 0
+  numeroUsuarios: { _all: number; patient_id: number; doctor_id: number };
+  numeroUsuarioUltimoMes: { _all: number; patient_id: number; doctor_id: number };
+  consultasAceitas: number;
+  consultasAceitasUltimoMes: number;
+  consultasConcluidas: number;
+  consultasConcluidasUltimoMes: number;
+  podologosExcelentes: number;
+  podologosRuins: number;
 }
 
 export default function Informacoes() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [jaObteveDados, setJaObteveDados] = useState(false);
-  const [infoApp, setInfoApp] = useState(
-    {
-      numeroUsuarios: { _all: 0, patient_id: 0, doctor_id: 0 },
-      numeroUsuarioUltimoMes: { _all: 0, patient_id: 0, doctor_id: 0 },
-      consultasAceitas: 0,
-      consultasAceitasUltimoMes: 0,
-      consultasConcluidas: 0,
-      consultasConcluidasUltimoMes: 0,
-      podologosExcelentes: 0,
-      podologosRuins: 0
-    }
-  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [infoApp, setInfoApp] = useState<InformacoesSobreOApp>({
+    numeroUsuarios: { _all: 0, patient_id: 0, doctor_id: 0 },
+    numeroUsuarioUltimoMes: { _all: 0, patient_id: 0, doctor_id: 0 },
+    consultasAceitas: 0,
+    consultasAceitasUltimoMes: 0,
+    consultasConcluidas: 0,
+    consultasConcluidasUltimoMes: 0,
+    podologosExcelentes: 0,
+    podologosRuins: 0
+  });
 
   const buscarInfo = async () => {
-    console.log('buscando info');
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       const response = await api.get('/admin/getInfo');
       setInfoApp(response.data);
-      console.log(response.data);
     } catch (err: any) {
-      console.log(err);
-      console.log(err.response.data);
-      console.log(err.response.status);
+      console.error('Erro ao buscar informações:', err);
+    } finally {
+      setIsLoading(false);
     }
-    setJaObteveDados(true);
-    setIsLoading(false);
   };
 
   useEffect(() => {
-      if (!isLoading && !jaObteveDados) {
-        buscarInfo();
-      }
-    });
+    buscarInfo();
+  }, []); // Array vazio executa apenas uma vez
 
   return (
-    <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
-      <h1 className='text-[30px] font-bold text-azul'>
+    <div className='flex h-full w-full flex-col gap-6 overflow-auto px-4 py-6 md:px-8 lg:px-14'>
+      <h1 className='text-2xl font-bold text-azul lg:text-3xl'>
         Informações do aplicativo
       </h1>
-      {isLoading 
-      ?
-      <ReactLoading
-        type="spin"
-        color="#2087ed"
-        height={"30px"}
-        width={"30px"}
-        className='m-auto'
-      /> 
-      :
-      <div className='mb-10 flex flex-1 flex-wrap gap-10'>
-        <Informacao
-          imagem={Paciente}
-          numero={infoApp.numeroUsuarios.patient_id}
-          texto='Pacientes'
-          ultimoMes={infoApp.numeroUsuarioUltimoMes.patient_id}
-        />
-        <Informacao
-          imagem={Podologo}
-          numero={infoApp.numeroUsuarios.doctor_id}
-          texto='Podólogos'
-          ultimoMes={infoApp.numeroUsuarioUltimoMes.doctor_id}
-        />
-        <Informacao
-          imagem={Calendario}
-          numero={infoApp.consultasAceitas}
-          texto='Consultas aceitas'
-          ultimoMes={infoApp.consultasAceitasUltimoMes}
-        />
-        <Informacao
-          imagem={CalendarioCheck}
-          numero={infoApp.consultasConcluidas}
-          texto='Consultas realizadas'
-          ultimoMes={infoApp.consultasConcluidasUltimoMes}
-        />
-        <Informacao
-          imagem={Estrela}
-          numero={infoApp.podologosExcelentes}
-          texto='Podólogos 5 estrelas'
-          tresImagens={true}
-        />
-        <Informacao
-          imagem={Estrela}
-          numero={infoApp.podologosRuins}
-          texto='Podólogos abaixo de 3 estrelas'
-        />
-      </div>}
+      
+      {isLoading ? (
+        <div className='flex flex-1 items-center justify-center'>
+          <ReactLoading
+            type='spin'
+            color='#2087ed'
+            height={40}
+            width={40}
+          />
+        </div>
+      ) : (
+        <div className='mb-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+          <Informacao
+            imagem={Paciente}
+            numero={infoApp.numeroUsuarios.patient_id}
+            texto='Pacientes'
+            ultimoMes={infoApp.numeroUsuarioUltimoMes.patient_id}
+          />
+          <Informacao
+            imagem={Podologo}
+            numero={infoApp.numeroUsuarios.doctor_id}
+            texto='Podólogos'
+            ultimoMes={infoApp.numeroUsuarioUltimoMes.doctor_id}
+          />
+          <Informacao
+            imagem={Calendario}
+            numero={infoApp.consultasAceitas}
+            texto='Consultas aceitas'
+            ultimoMes={infoApp.consultasAceitasUltimoMes}
+          />
+          <Informacao
+            imagem={CalendarioCheck}
+            numero={infoApp.consultasConcluidas}
+            texto='Consultas realizadas'
+            ultimoMes={infoApp.consultasConcluidasUltimoMes}
+          />
+          <Informacao
+            imagem={Estrela}
+            numero={infoApp.podologosExcelentes}
+            texto='Podólogos 5 estrelas'
+            tresImagens={true}
+          />
+          <Informacao
+            imagem={Estrela}
+            numero={infoApp.podologosRuins}
+            texto='Podólogos abaixo de 3 estrelas'
+          />
+        </div>
+      )}
     </div>
   );
 }

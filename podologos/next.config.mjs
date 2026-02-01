@@ -8,7 +8,7 @@ const nextConfig = {
         },
         {
           protocol: 'https',
-          hostname: 'www.google.com', // Permite carregar imagens do Google
+          hostname: 'google.com', // Permite carregar imagens do Google
         },
         // Adicione outros domínios conforme necessário
       ],
