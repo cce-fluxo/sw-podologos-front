@@ -21,7 +21,7 @@ export function ModalApenasInfoUser({
     }
   
     return(
-    <div className='absolute h-screen w-full bg-[#00000031] z-50 flex items-center justify-center'>
+    <div className='fixed inset-0 h-screen w-full bg-[#00000031] z-40 flex items-center justify-center'>
         <div className='flex flex-col items-center justify-center rounded-xl bg-white px-10 py-6'>
             <svg onClick={() => fecharModal(false)} 
                 className='ml-auto cursor-pointer' 

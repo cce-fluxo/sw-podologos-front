@@ -97,7 +97,6 @@ export default function PodologosCadastrados() {
     <>
       <ModalInfoPodologo 
         selectedDoctorInfo={selectedDoctorInfo}  
-        loadingAceitarCadastro={loadingAceitarCadastro}
         visible={modalInfoPodologo}
         fecharModal={setModalInfoPodologo}
       />

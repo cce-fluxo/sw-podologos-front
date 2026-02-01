@@ -2,33 +2,42 @@
 import { CustomStyles } from '@/Components/TableStyle/index';
 import DataTable from 'react-data-table-component';
 import Image from 'next/image';
-import PacienteImage from '@/assets/PacienteImage.svg';
 import { useEffect, useState } from 'react';
 import api from '@/services/axios';
 import ReactLoading from 'react-loading';
 import { ModalInfoDenuncia } from '@/Components/popUps/ModalInfoDenuncia';
+import { ModalApenasInfoUser } from '@/Components/popUps/ModalApenasInfoUser';
 
 export default function ListaDenuncia() {
   const [dadosDenuncias, setDadosDenuncias] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedReportInfo, setSelectedReportInfo] = useState();
-  const [loadingExcluirPodologo, setLoadingExcluirPodologo] = useState(false);
+  const [selectedReportInfo, setSelectedReportInfo] = useState<any>(null);
+  const [selectedUserInfo, setSelectedUserInfo] = useState<any>(null);
   const [modalInfoReport, setModalInfoReport] = useState(false);
+  const [modalUserInfo, setModalUserInfo] = useState(false);
+  const [loadingExcluirPodologo, setLoadingExcluirPodologo] = useState(false);
+  const [loadingExcluirDenuncia, setLoadingExcluirDenuncia] = useState(false);
 
   const colunasTabela = [
     {
       name: 'Usuário',
-      selector: (row : any) => {
+      selector: (row: any) => {
         if (row.is_doctor_report) {
           // Se um médico estiver sendo denunciado
           return (
             <div className='flex items-center gap-2'>
-              { row.doctor.user.profile_picture &&
-              <div className="w-12 h-12 relative">
-                <Image alt='' fill src={row.doctor.user.profile_picture} className="object-cover rounded-full" />
-              </div>}
+              {row.doctor?.user?.profile_picture && (
+                <div className="w-12 h-12 relative">
+                  <Image 
+                    alt='' 
+                    fill 
+                    src={row.doctor.user.profile_picture} 
+                    className="object-cover rounded-full" 
+                  />
+                </div>
+              )}
               <div className='flex flex-col'>
-                <p className='whitespace-nowrap'>{row.doctor.user.first_name + " " + row.doctor.user.last_name}</p>
+                <p className='whitespace-nowrap'>{row.doctor?.user?.first_name || ''} {row.doctor?.user?.last_name || ''}</p>
                 <p className='whitespace-nowrap text-xs text-[#A4AAB2]'>Podólogo</p>
               </div>
             </div>
@@ -36,12 +45,18 @@ export default function ListaDenuncia() {
         }
         return (
           <div className='flex items-center gap-2'>
-            { row.patient.user.profile_picture &&
-            <div className="w-12 h-12 relative">
-              <Image alt='' fill src={row.patient.user.profile_picture} className="object-cover rounded-full" />
-            </div>}
+            {row.patient?.user?.profile_picture && (
+              <div className="w-12 h-12 relative">
+                <Image 
+                  alt='' 
+                  fill 
+                  src={row.patient.user.profile_picture} 
+                  className="object-cover rounded-full" 
+                />
+              </div>
+            )}
             <div className='flex flex-col'>
-              <p className='whitespace-nowrap'>{row.patient.user.first_name + " " + row.patient.user.last_name}</p>
+              <p className='whitespace-nowrap'>{row.patient?.user?.first_name || ''} {row.patient?.user?.last_name || ''}</p>
               <p className='whitespace-nowrap text-xs text-[#A4AAB2]'>Paciente</p>
             </div>
           </div>
@@ -50,17 +65,23 @@ export default function ListaDenuncia() {
     },
     {
       name: 'Denunciado por',
-      selector: (row : any) => {
+      selector: (row: any) => {
         if (row.is_doctor_report) {
           // Se um médico estiver sendo denunciado
           return (
             <div className='flex items-center gap-2'>
-              { row.patient.user.profile_picture &&
-              <div className="w-12 h-12 relative">
-                <Image alt='' fill src={row.patient.user.profile_picture} className="object-cover rounded-full" />
-              </div>}
+              {row.patient?.user?.profile_picture && (
+                <div className="w-12 h-12 relative">
+                  <Image 
+                    alt='' 
+                    fill 
+                    src={row.patient.user.profile_picture} 
+                    className="object-cover rounded-full" 
+                  />
+                </div>
+              )}
               <div className='flex flex-col'>
-                <p className='whitespace-nowrap'>{row.patient.user.first_name + " " + row.patient.user.last_name}</p>
+                <p className='whitespace-nowrap'>{row.patient?.user?.first_name || ''} {row.patient?.user?.last_name || ''}</p>
                 <p className='whitespace-nowrap text-xs text-[#A4AAB2]'>Paciente</p>
               </div>
             </div>
@@ -69,50 +90,112 @@ export default function ListaDenuncia() {
 
         return (
           <div className='flex items-center gap-2'>
-            { row.doctor.user.profile_picture &&
-            <div className="w-12 h-12 relative">
-              <Image alt='' fill src={row.doctor.user.profile_picture} className="object-cover rounded-full" />
-            </div>}
+            {row.doctor?.user?.profile_picture && (
+              <div className="w-12 h-12 relative">
+                <Image 
+                  alt='' 
+                  fill 
+                  src={row.doctor.user.profile_picture} 
+                  className="object-cover rounded-full" 
+                />
+              </div>
+            )}
             <div className='flex flex-col'>
-              <p className='whitespace-nowrap'>{row.doctor.user.first_name + " " + row.doctor.user.last_name}</p>
+              <p className='whitespace-nowrap'>{row.doctor?.user?.first_name || ''} {row.doctor?.user?.last_name || ''}</p>
               <p className='whitespace-nowrap text-xs text-[#A4AAB2]'>Podólogo</p>
             </div>
           </div>
-        )
+        );
       },
     },
     {
       name: 'Data',
-      selector: (row : any) => new Date(row.CreatedAt).toLocaleDateString(),
+      selector: (row: any) => new Date(row.CreatedAt).toLocaleDateString(),
     },
   ];
 
   const handleRowClick = async (row: any) => {
-    console.log(row);
+    console.log('Denúncia selecionada:', row);
     setSelectedReportInfo(row);
     setModalInfoReport(true);
-  }
+  };
+
+  // Função para mostrar informações do usuário
+  const handleShowUserInfo = (usuario: any) => {
+    console.log('Mostrar informações do usuário:', usuario);
+    setSelectedUserInfo(usuario);
+    setModalInfoReport(false); // Fecha o modal de denúncia
+    setModalUserInfo(true);    // Abre o modal de informações do usuário
+  };
+
+  // Função para fechar o modal de informações do usuário
+  const handleCloseUserInfo = () => {
+    setModalUserInfo(false);
+    setModalInfoReport(true); // Reabre o modal de denúncia
+  };
+
+  // Função para excluir podólogo
+  const handleExcluirPodologo = async () => {
+    if (!selectedReportInfo) return;
+    
+    setLoadingExcluirPodologo(true);
+    try {
+      console.log('Excluindo podólogo da denúncia:', selectedReportInfo.id);
+      // Aqui você faria a chamada à API para excluir o podólogo
+      // await api.delete(`/doctor/${selectedReportInfo.doctor_id}`);
+      
+      // Fecha o modal e recarrega os dados
+      setModalInfoReport(false);
+      buscarDenuncias();
+    } catch (error) {
+      console.error('Erro ao excluir podólogo:', error);
+    } finally {
+      setLoadingExcluirPodologo(false);
+    }
+  };
+
+  // Função para excluir denúncia
+  const handleExcluirDenuncia = async () => {
+    if (!selectedReportInfo) return;
+    
+    setLoadingExcluirDenuncia(true);
+    try {
+      console.log('Excluindo denúncia:', selectedReportInfo.id);
+      // Aqui você faria a chamada à API para excluir a denúncia
+      // await api.delete(`/report/${selectedReportInfo.id}`);
+      
+      // Fecha o modal e recarrega os dados
+      setModalInfoReport(false);
+      buscarDenuncias();
+    } catch (error) {
+      console.error('Erro ao excluir denúncia:', error);
+    } finally {
+      setLoadingExcluirDenuncia(false);
+    }
+  };
 
   const buscarDenuncias = async () => {
-    console.log('buscando Denuncias');
+    console.log('Buscando denúncias...');
     setIsLoading(true);
     try {
       const response = await api.get('/report');
       setDadosDenuncias(response.data);
-      console.log(response.data);
+      console.log('Denúncias carregadas:', response.data);
     } catch (err: any) {
-      console.log(err);
-      console.log(err.response.data);
-      console.log(err.response.status);
+      console.error('Erro ao buscar denúncias:', err);
+      if (err.response) {
+        console.error('Dados do erro:', err.response.data);
+        console.error('Status do erro:', err.response.status);
+      }
     }
     setIsLoading(false);
   };
-  
+
   useEffect(() => {
     if (isLoading && !dadosDenuncias) {
       buscarDenuncias();
     }
-  });
+  }, [isLoading, dadosDenuncias]);
 
   // Componente customizado para quando não há dados
   const CustomNoDataComponent = () => (
@@ -129,36 +212,53 @@ export default function ListaDenuncia() {
 
   return (
     <>
-      <ModalInfoDenuncia
-        selectedReportInfo={selectedReportInfo}  
-        loadingAceitarCadastro={loadingExcluirPodologo}
-        visible={modalInfoReport}
-        fecharModal={setModalInfoReport}
-        excluirPodologo={() => {}}
-      />
+      {/* Modal de Denúncia */}
+      {modalInfoReport && selectedReportInfo && (
+        <ModalInfoDenuncia
+          selectedReportInfo={selectedReportInfo}
+          loadingExcluir={loadingExcluirPodologo || loadingExcluirDenuncia}
+          visible={modalInfoReport}
+          fecharModal={setModalInfoReport}
+          excluirPodologo={handleExcluirPodologo}
+          excluirDenuncia={handleExcluirDenuncia}
+          onShowUserInfo={handleShowUserInfo} // Passa a função para abrir o modal de usuário
+        />
+      )}
+
+      {/* Modal de Informações do Usuário */}
+      {modalUserInfo && selectedUserInfo && (
+        <ModalApenasInfoUser
+          selectedUserInfo={selectedUserInfo}
+          visible={modalUserInfo}
+          fecharModal={handleCloseUserInfo} // Usa a função personalizada
+        />
+      )}
+
       <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
         <h1 className='text-[30px] font-bold text-azul'>Lista de denúncias</h1>
-        {isLoading 
-        ?
-        <ReactLoading
-          type="spin"
-          color="#2087ed"
-          height={"30px"}
-          width={"30px"}
-          className='m-auto'
-        />
-        :
-        <div className='rounded-2xl shadow-lg shadow-cinza'>
-          <DataTable
-            responsive
-            noDataComponent={<CustomNoDataComponent />}
-            columns={colunasTabela}
-            data={dadosDenuncias}
-            customStyles={CustomStyles}
-            onRowClicked={handleRowClick}
-            pointerOnHover
-          />
-        </div>}
+        
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <ReactLoading
+              type="spin"
+              color="#2087ed"
+              height={"30px"}
+              width={"30px"}
+            />
+          </div>
+        ) : (
+          <div className='rounded-2xl shadow-lg shadow-cinza overflow-hidden'>
+            <DataTable
+              responsive
+              noDataComponent={<CustomNoDataComponent />}
+              columns={colunasTabela}
+              data={dadosDenuncias}
+              customStyles={CustomStyles}
+              onRowClicked={handleRowClick}
+              pointerOnHover
+            />
+          </div>
+        )}
       </div>
     </>
   );

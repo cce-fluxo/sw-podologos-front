@@ -29,7 +29,7 @@ export function ModalInfoPodologo({
     }
   
     return(
-    <div className='absolute h-screen w-full bg-[#00000031] z-50 flex items-center justify-center'>
+    <div className='fixed inset-0 h-screen w-full bg-[#00000031] z-40 flex items-center justify-center'>
         <div className='flex flex-col items-center justify-center rounded-xl bg-white px-10 py-6'>
             <svg onClick={() => {
                 if (!loadingAceitarCadastro) {
@@ -45,7 +45,7 @@ export function ModalInfoPodologo({
             >
                 <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="#46555A" />
             </svg>
-            <h2 className='text-azul text-2xl font-bold mb-6'>Informações da solicitação</h2>
+            <h2 className='text-azul text-2xl font-bold mb-6'>{modalDeAceitarPodologo ? 'Informações da solicitação' : 'Informações do podólogo'}</h2>
             <div className='flex flex-row items-center'>
                 {
                 /* Imagem */
@@ -67,13 +67,6 @@ export function ModalInfoPodologo({
                 </div>
             </div>
 
-            {selectedDoctorInfo.degree_photo && 
-            <Link href={selectedDoctorInfo.degree_photo} rel="noopener noreferrer" target="_blank"> 
-            <div className="w-44 h-44 relative mt-2">
-                <Image alt='' fill src={selectedDoctorInfo.degree_photo} className="object-cover rounded-lg" />
-            </div>
-            </Link>}
-
             {
             /* Botões */
             }
@@ -81,6 +74,14 @@ export function ModalInfoPodologo({
             modalDeAceitarPodologo 
             ?
             <>
+
+                {selectedDoctorInfo.degree_photo && 
+                <Link href={selectedDoctorInfo.degree_photo} rel="noopener noreferrer" target="_blank"> 
+                <div className="w-44 h-44 relative mt-2">
+                    <Image alt='' fill src={selectedDoctorInfo.degree_photo} className="object-cover rounded-lg" />
+                </div>
+                </Link>}
+                
                 <Button 
                 className='w-[85%] mt-6' 
                 disabled={loadingAceitarCadastro} // Desativa o botão durante o loading
@@ -107,16 +108,7 @@ export function ModalInfoPodologo({
                 </Button>
             </>
             :
-            <Button 
-                className='w-[85%] mt-6' 
-                disabled={loadingAceitarCadastro} // Desativa o botão durante o loading
-                onClick={() => autorizarPodologo()}
-            >
-                {loadingAceitarCadastro ? <ClipLoader size={25} color='white' /> :
-                <>
-                Excluir podólogo
-                </>}
-            </Button>
+            <div></div>
             }
         </div>
     </div>
