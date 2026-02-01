@@ -16,7 +16,7 @@ function ModalSimNao({ isOpen, onNoClick, text, onYesClick }: PopupProps) {
       overlayClassName='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center'
       className='w-[30vw] rounded-2xl bg-white p-6 shadow-sm shadow-black'
     >
-      <p className='mb-8 p-1 text-center text-base font-semibold'>{text}</p>
+      <p className='mb-8 p-1 text-center text-base font-normal text-cinzaTexto'>{text}</p>
 
       <div className='flex flex-col items-center justify-center gap-2 border-t-[1px] border-zinc-300'>
         <Button onClick={onYesClick} className='mx-auto py-3'>

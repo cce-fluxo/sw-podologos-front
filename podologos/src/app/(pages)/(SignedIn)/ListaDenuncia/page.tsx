@@ -7,23 +7,34 @@ import api from '@/services/axios';
 import ReactLoading from 'react-loading';
 import { ModalInfoDenuncia } from '@/Components/popUps/ModalInfoDenuncia';
 import { ModalApenasInfoUser } from '@/Components/popUps/ModalApenasInfoUser';
+import ModalSimNao from '@/Components/popUps/ModalSimNao';
+import ModalCheck from '@/Components/popUps/ModalCheck';
 
 export default function ListaDenuncia() {
+  // Estados para dados e loading
   const [dadosDenuncias, setDadosDenuncias] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Estados para os modais
   const [selectedReportInfo, setSelectedReportInfo] = useState<any>(null);
   const [selectedUserInfo, setSelectedUserInfo] = useState<any>(null);
+  
+  // Visibilidade dos modais
   const [modalInfoReport, setModalInfoReport] = useState(false);
   const [modalUserInfo, setModalUserInfo] = useState(false);
-  const [loadingExcluirPodologo, setLoadingExcluirPodologo] = useState(false);
-  const [loadingExcluirDenuncia, setLoadingExcluirDenuncia] = useState(false);
+  const [modalConfirmacao, setModalConfirmacao] = useState(false);
+  const [modalCheck, setModalCheck] = useState(false);
+  
+  // Estados para controlar o tipo de ação
+  const [acaoTipo, setAcaoTipo] = useState<'excluir_podologo' | 'excluir_denuncia' | null>(null);
+  const [loadingAcao, setLoadingAcao] = useState(false);
+  const [mensagemSucesso, setMensagemSucesso] = useState('');
 
   const colunasTabela = [
     {
       name: 'Usuário',
       selector: (row: any) => {
         if (row.is_doctor_report) {
-          // Se um médico estiver sendo denunciado
           return (
             <div className='flex items-center gap-2'>
               {row.doctor?.user?.profile_picture && (
@@ -67,7 +78,6 @@ export default function ListaDenuncia() {
       name: 'Denunciado por',
       selector: (row: any) => {
         if (row.is_doctor_report) {
-          // Se um médico estiver sendo denunciado
           return (
             <div className='flex items-center gap-2'>
               {row.patient?.user?.profile_picture && (
@@ -87,7 +97,6 @@ export default function ListaDenuncia() {
             </div>
           );
         }
-
         return (
           <div className='flex items-center gap-2'>
             {row.doctor?.user?.profile_picture && (
@@ -114,79 +123,94 @@ export default function ListaDenuncia() {
     },
   ];
 
-  const handleRowClick = async (row: any) => {
-    console.log('Denúncia selecionada:', row);
-    setSelectedReportInfo(row);
-    setModalInfoReport(true);
+  // Função para abrir modal de confirmação
+  const abrirModalConfirmacao = (tipo: 'excluir_podologo' | 'excluir_denuncia') => {
+    setAcaoTipo(tipo);
+    setModalInfoReport(false); // Fecha o modal de denúncia
+    setModalConfirmacao(true); // Abre o modal de confirmação
+  };
+
+  // Função quando clica em SIM no modal de confirmação
+  const handleConfirmarAcao = async () => {
+    if (!selectedReportInfo || !acaoTipo) return;
+    
+    setLoadingAcao(true);
+    try {
+      let endpoint = '';
+      let mensagem = '';
+      
+      if (acaoTipo === 'excluir_podologo') {
+        endpoint = `/doctor/${selectedReportInfo.doctor_id}`;
+        mensagem = 'Podólogo excluído com sucesso!';
+      } else {
+        endpoint = `/report/${selectedReportInfo.id}`;
+        mensagem = 'Denúncia excluída com sucesso!';
+      }
+      
+      // Chamada à API
+      await api.delete(endpoint);
+      
+      // Define a mensagem de sucesso
+      setMensagemSucesso(mensagem);
+      
+      // Fecha o modal de confirmação e abre o modal de check
+      setModalConfirmacao(false);
+      setModalCheck(true);
+      
+      // Recarrega os dados
+      buscarDenuncias();
+      
+    } catch (error) {
+      console.error('Erro ao executar ação:', error);
+      setMensagemSucesso('Erro ao processar a solicitação.');
+      setModalConfirmacao(false);
+      setModalCheck(true);
+    } finally {
+      setLoadingAcao(false);
+    }
+  };
+
+  // Função quando clica em NÃO no modal de confirmação
+  const handleCancelarAcao = () => {
+    setModalConfirmacao(false); // Fecha modal de confirmação
+    setModalInfoReport(true);   // Volta para o modal de denúncia
+  };
+
+  // Função quando clica em OK no modal de check
+  const handleFecharModalCheck = () => {
+    setModalCheck(false); // Fecha modal de check
+    
+    // Se ainda tiver o modal de denúncia para reabrir
+    if (selectedReportInfo) {
+      setModalInfoReport(true);
+    }
   };
 
   // Função para mostrar informações do usuário
   const handleShowUserInfo = (usuario: any) => {
-    console.log('Mostrar informações do usuário:', usuario);
     setSelectedUserInfo(usuario);
-    setModalInfoReport(false); // Fecha o modal de denúncia
-    setModalUserInfo(true);    // Abre o modal de informações do usuário
+    setModalInfoReport(false);
+    setModalUserInfo(true);
   };
 
   // Função para fechar o modal de informações do usuário
   const handleCloseUserInfo = () => {
     setModalUserInfo(false);
-    setModalInfoReport(true); // Reabre o modal de denúncia
+    setModalInfoReport(true);
   };
 
-  // Função para excluir podólogo
-  const handleExcluirPodologo = async () => {
-    if (!selectedReportInfo) return;
-    
-    setLoadingExcluirPodologo(true);
-    try {
-      console.log('Excluindo podólogo da denúncia:', selectedReportInfo.id);
-      // Aqui você faria a chamada à API para excluir o podólogo
-      // await api.delete(`/doctor/${selectedReportInfo.doctor_id}`);
-      
-      // Fecha o modal e recarrega os dados
-      setModalInfoReport(false);
-      buscarDenuncias();
-    } catch (error) {
-      console.error('Erro ao excluir podólogo:', error);
-    } finally {
-      setLoadingExcluirPodologo(false);
-    }
-  };
-
-  // Função para excluir denúncia
-  const handleExcluirDenuncia = async () => {
-    if (!selectedReportInfo) return;
-    
-    setLoadingExcluirDenuncia(true);
-    try {
-      console.log('Excluindo denúncia:', selectedReportInfo.id);
-      // Aqui você faria a chamada à API para excluir a denúncia
-      // await api.delete(`/report/${selectedReportInfo.id}`);
-      
-      // Fecha o modal e recarrega os dados
-      setModalInfoReport(false);
-      buscarDenuncias();
-    } catch (error) {
-      console.error('Erro ao excluir denúncia:', error);
-    } finally {
-      setLoadingExcluirDenuncia(false);
-    }
+  const handleRowClick = async (row: any) => {
+    setSelectedReportInfo(row);
+    setModalInfoReport(true);
   };
 
   const buscarDenuncias = async () => {
-    console.log('Buscando denúncias...');
     setIsLoading(true);
     try {
       const response = await api.get('/report');
       setDadosDenuncias(response.data);
-      console.log('Denúncias carregadas:', response.data);
     } catch (err: any) {
       console.error('Erro ao buscar denúncias:', err);
-      if (err.response) {
-        console.error('Dados do erro:', err.response.data);
-        console.error('Status do erro:', err.response.status);
-      }
     }
     setIsLoading(false);
   };
@@ -197,7 +221,18 @@ export default function ListaDenuncia() {
     }
   }, [isLoading, dadosDenuncias]);
 
-  // Componente customizado para quando não há dados
+  // Textos para o modal de confirmação baseados no tipo de ação
+  const getTextoConfirmacao = () => {
+    switch (acaoTipo) {
+      case 'excluir_podologo':
+        return 'Tem certeza que deseja excluir este podólogo? Esta ação é irreversível.';
+      case 'excluir_denuncia':
+        return 'Tem certeza que deseja excluir esta denúncia? Esta ação é irreversível.';
+      default:
+        return 'Tem certeza que deseja prosseguir?';
+    }
+  };
+
   const CustomNoDataComponent = () => (
     <div className="p-6 text-center">
       <div className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-gray-100">
@@ -212,16 +247,16 @@ export default function ListaDenuncia() {
 
   return (
     <>
-      {/* Modal de Denúncia */}
+      {/* Modal de Informações da Denúncia */}
       {modalInfoReport && selectedReportInfo && (
         <ModalInfoDenuncia
           selectedReportInfo={selectedReportInfo}
-          loadingExcluir={loadingExcluirPodologo || loadingExcluirDenuncia}
+          loadingExcluir={loadingAcao}
           visible={modalInfoReport}
           fecharModal={setModalInfoReport}
-          excluirPodologo={handleExcluirPodologo}
-          excluirDenuncia={handleExcluirDenuncia}
-          onShowUserInfo={handleShowUserInfo} // Passa a função para abrir o modal de usuário
+          excluirPodologo={() => abrirModalConfirmacao('excluir_podologo')}
+          excluirDenuncia={() => abrirModalConfirmacao('excluir_denuncia')}
+          onShowUserInfo={handleShowUserInfo}
         />
       )}
 
@@ -230,9 +265,24 @@ export default function ListaDenuncia() {
         <ModalApenasInfoUser
           selectedUserInfo={selectedUserInfo}
           visible={modalUserInfo}
-          fecharModal={handleCloseUserInfo} // Usa a função personalizada
+          fecharModal={handleCloseUserInfo}
         />
       )}
+
+      {/* Modal de Confirmação (Sim/Não) */}
+      <ModalSimNao
+        isOpen={modalConfirmacao}
+        onYesClick={handleConfirmarAcao}
+        onNoClick={handleCancelarAcao}
+        text={getTextoConfirmacao()}
+      />
+
+      {/* Modal de Check (Sucesso) */}
+      <ModalCheck
+        isOpen={modalCheck}
+        mensagem={mensagemSucesso}
+        onNoClick={handleFecharModalCheck}
+      />
 
       <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
         <h1 className='text-[30px] font-bold text-azul'>Lista de denúncias</h1>
