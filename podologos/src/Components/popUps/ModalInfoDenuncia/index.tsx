@@ -8,20 +8,20 @@ interface DadosDenuncia {
     doctor_id: string;
     patient_id: string;
     reason: string;
-    is_doctor_report: string;
+    is_doctor_report: boolean; 
     CreatedAt: string;
-    patient: {
-        user: {
-            first_name: string;
-            last_name: string;
-            profile_picture: string
-        }
-    };
     doctor: {
         user: {
-            first_name: string;
             last_name: string;
-            profile_picture: string
+            first_name: string;
+            profile_picture: string;
+        }
+    };
+    patient: {
+        user: {
+            last_name: string;
+            first_name: string;
+            profile_picture: string;
         }
     }
 }
@@ -50,6 +50,7 @@ export function ModalInfoDenuncia({
     if (!visible) {
         return null;
     }
+    console.log('Dados', selectedReportInfo)
 
     // Caso seja uma denúncia de um médico
     if (!selectedReportInfo.is_doctor_report) {
@@ -87,20 +88,21 @@ export function ModalInfoDenuncia({
                             </div>
                         }
                         <div className='flex flex-col'>
-                            <p className='text-left text-cinzaTexto font-semibold'>
-                                {selectedReportInfo?.doctor?.user?.first_name + " " + selectedReportInfo?.doctor?.user?.last_name}
-                            </p>
+                            <p className='whitespace-nowrap text-cinzaTexto font-semibold'>{selectedReportInfo.doctor?.user?.first_name || 'Não'} {selectedReportInfo.doctor?.user?.last_name || 'encontrado'}</p>
+
                             <p
                                 onClick={() => onShowUserInfo?.(selectedReportInfo?.doctor)}
                                 className='text-left text-azul underline cursor-pointer hover:text-azul/80'
                             >
                                 Ver mais informações
                             </p>
-                            <p className='text-left text-cinzaTextoClaro whitespace-nowrap'>
-                                Motivo: {selectedReportInfo?.reason}
-                            </p>
                         </div>
                     </div>
+
+                    <p className='text-left text-cinzaTextoClaro whitespace-break-spaces mt-2'>
+                        Motivo: {selectedReportInfo?.reason}
+                    </p>
+
                     <h2 className='text-cinzaTextoClaro text-sm text-left w-full mb-2 mt-4'>Paciente denunciado:</h2>
                     <div className='flex flex-row items-start w-full'>
                         {selectedReportInfo.patient?.user?.profile_picture && 
@@ -113,10 +115,9 @@ export function ModalInfoDenuncia({
                                 />
                             </div>
                         }
-                        <div className='flex flex-col'>
-                            <p className='text-left text-cinzaTexto font-semibold'>
-                                {selectedReportInfo?.patient?.user?.first_name + " " + selectedReportInfo?.patient?.user?.last_name}
-                            </p>
+                        <div className='flex flex-col'>                      
+                            <p className='whitespace-nowrap text-cinzaTexto font-semibold'>{selectedReportInfo.patient?.user?.first_name || 'Não'} {selectedReportInfo.patient?.user?.last_name || 'encontrado'}</p>
+
                             <p 
                                 onClick={() => onShowUserInfo?.(selectedReportInfo?.patient)}
                                 className='text-left text-azul underline cursor-pointer hover:text-azul/80'
@@ -133,7 +134,7 @@ export function ModalInfoDenuncia({
                         >
                             {loadingExcluir 
                                 ? <ClipLoader size={25} color='white' /> 
-                                : 'Excluir podólogo'
+                                : `Excluir paciente`
                             }
                         </Button>
 
@@ -152,7 +153,7 @@ export function ModalInfoDenuncia({
             </div>
         );
     }
-  
+
     // Caso seja uma denúncia de um paciente
     return(
         <div className='fixed inset-0 h-screen w-full bg-[#00000031] z-40 flex items-center justify-center'>
@@ -188,20 +189,21 @@ export function ModalInfoDenuncia({
                         </div>
                     }
                     <div className='flex flex-col'>
-                        <p className='text-left text-cinzaTexto font-semibold'>
-                            {selectedReportInfo?.patient?.user?.first_name + " " + selectedReportInfo?.patient?.user?.last_name}
-                        </p>
+                        <p className='whitespace-nowrap text-cinzaTexto font-semibold'>{selectedReportInfo.patient?.user?.first_name || 'Não'} {selectedReportInfo.patient?.user?.last_name || 'encontrado'}</p>
+
                         <p 
                             onClick={() => onShowUserInfo?.(selectedReportInfo?.patient)}
                             className='text-left text-azul underline cursor-pointer hover:text-azul/80'
                         >
                             Ver mais informações
                         </p>
-                        <p className='text-left text-cinzaTextoClaro whitespace-nowrap'>
-                            Motivo: {selectedReportInfo?.reason}
-                        </p>
                     </div>
                 </div>
+
+                <p className='text-left text-cinzaTextoClaro whitespace-break-spaces mt-2'>
+                    Motivo: {selectedReportInfo?.reason}
+                </p>
+
                 <h2 className='text-cinzaTextoClaro text-sm text-left w-full mb-2 mt-4'>Podólogo denunciado:</h2>
                 <div className='flex flex-row items-start w-full'>
                     {selectedReportInfo.doctor?.user?.profile_picture && 
@@ -215,9 +217,8 @@ export function ModalInfoDenuncia({
                         </div>
                     }
                     <div className='flex flex-col'>
-                        <p className='text-left text-cinzaTexto font-semibold'>
-                            {selectedReportInfo?.doctor?.user?.first_name + " " + selectedReportInfo?.doctor?.user?.last_name}
-                        </p>
+                        <p className='whitespace-nowrap text-cinzaTexto font-semibold'>{selectedReportInfo.doctor?.user?.first_name || 'Não'} {selectedReportInfo.doctor?.user?.last_name || 'encontrado'}</p>
+
                         <p 
                             onClick={() => onShowUserInfo?.(selectedReportInfo?.doctor)}
                             className='text-left text-azul underline cursor-pointer hover:text-azul/80'

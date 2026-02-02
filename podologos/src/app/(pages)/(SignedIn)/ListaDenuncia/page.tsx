@@ -10,12 +10,21 @@ import { ModalApenasInfoUser } from '@/Components/popUps/ModalApenasInfoUser';
 import ModalSimNao from '@/Components/popUps/ModalSimNao';
 import ModalCheck from '@/Components/popUps/ModalCheck';
 
+// Interface do que temos nas colunas
+interface Column {
+  name: string;
+  selector?: (row: DadosDenuncia) => string;
+  cell?: (row: DadosDenuncia) => JSX.Element | null;
+  width?: string;
+  sortable?: boolean;
+}
+
 interface DadosDenuncia {
   report_id: string;
   doctor_id: string;
   patient_id: string;
   reason: string;
-  is_doctor_report: string;
+  is_doctor_report: boolean; 
   CreatedAt: string;
   doctor: {
     user: {
@@ -49,17 +58,18 @@ export default function ListaDenuncia() {
   const [modalCheck, setModalCheck] = useState(false);
   
   // Estados para controlar o tipo de ação
-  const [acaoTipo, setAcaoTipo] = useState<'excluir_podologo' | 'excluir_denuncia' | null>(null);
+  const [acaoTipo, setAcaoTipo] = useState<'excluir_podologo' | 'excluir_denuncia' | 'excluir_paciente' | null>(null);
   const [loadingAcao, setLoadingAcao] = useState(false);
   const [mensagemSucesso, setMensagemSucesso] = useState('');
 
-  const colunasTabela = [
+  const colunasTabela: Column[] = [
     {
       name: 'Usuário',
-      selector: (row: any) => {
+      selector: (row: DadosDenuncia) => row.reason,
+      cell: (row: DadosDenuncia) => {
         if (row.is_doctor_report) {
           return (
-            <div className='flex items-center gap-2'>
+            <div className='flex items-center gap-2' onClick={() => handleRowClick(row)}>
               {row.doctor?.user?.profile_picture && (
                 <div className="w-12 h-12 relative">
                   <Image 
@@ -78,7 +88,7 @@ export default function ListaDenuncia() {
           );
         }
         return (
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-2' onClick={() => handleRowClick(row)}>
             {row.patient?.user?.profile_picture && (
               <div className="w-12 h-12 relative">
                 <Image 
@@ -96,13 +106,15 @@ export default function ListaDenuncia() {
           </div>
         );
       },
+      sortable: true
     },
     {
       name: 'Denunciado por',
-      selector: (row: any) => {
+      selector: (row: DadosDenuncia) => row.reason,
+      cell: (row: DadosDenuncia) => {
         if (row.is_doctor_report) {
           return (
-            <div className='flex items-center gap-2'>
+            <div className='flex items-center gap-2' onClick={() => handleRowClick(row)}>
               {row.patient?.user?.profile_picture && (
                 <div className="w-12 h-12 relative">
                   <Image 
@@ -121,7 +133,7 @@ export default function ListaDenuncia() {
           );
         }
         return (
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-2' onClick={() => handleRowClick(row)}>
             {row.doctor?.user?.profile_picture && (
               <div className="w-12 h-12 relative">
                 <Image 
@@ -139,18 +151,76 @@ export default function ListaDenuncia() {
           </div>
         );
       },
+      sortable: true
     },
     {
       name: 'Data',
       selector: (row: any) => new Date(row.CreatedAt).toLocaleDateString(),
+      sortable: true
     },
   ];
 
+  // Função para determinar quem é o denunciado e quem é o denunciante
+  const determinarDenunciadoEDenunciante = (report: DadosDenuncia) => {
+    console.log(report.is_doctor_report, 'doctor_report');
+    if (report.is_doctor_report === false) {
+      // Se é doctor_report: Médico denunciando paciente
+      console.log('Entrei pra excluir paciente')
+
+      return {
+        denunciado: { 
+          tipo: 'paciente', 
+          id: report.patient_id, 
+          nome: report.patient?.user?.first_name || 'Paciente' 
+        },
+        denunciante: { 
+          tipo: 'podologo', 
+          id: report.doctor_id, 
+          nome: report.doctor?.user?.first_name || 'Podólogo' 
+        }
+      };
+    } else {
+      // Se não é doctor_report: Paciente denunciando médico
+      console.log('Entrei pra excluir podólogo')
+      return {
+        denunciado: { 
+          tipo: 'podologo', 
+          id: report.doctor_id, 
+          nome: report.doctor?.user?.first_name || 'Podólogo' 
+        },
+        denunciante: { 
+          tipo: 'paciente', 
+          id: report.patient_id, 
+          nome: report.patient?.user?.first_name || 'Paciente' 
+        }
+      };
+    }
+  };
+
   // Função para abrir modal de confirmação
-  const abrirModalConfirmacao = (tipo: 'excluir_podologo' | 'excluir_denuncia') => {
+  const abrirModalConfirmacao = (tipo: 'excluir_podologo' | 'excluir_denuncia' | 'excluir_paciente') => {
     setAcaoTipo(tipo);
+    console.log('Modal confirmar acionado com >>> ', tipo)
     setModalInfoReport(false); // Fecha o modal de denúncia
     setModalConfirmacao(true); // Abre o modal de confirmação
+  };
+
+  // Função para determinar qual ação tomar baseado no tipo de denúncia
+  const handleExcluirDenunciado = () => {
+    console.log('Report selecionado', selectedReportInfo)
+    if (!selectedReportInfo) return;
+    console.log('Adicionei o excluir denunciado')
+    
+    const { denunciado } = determinarDenunciadoEDenunciante(selectedReportInfo);
+    console.log('DENUNCIA DENUNCIA', denunciado)
+    
+    if (denunciado.tipo === 'paciente') {
+      // Se o denunciado é um paciente, exclua o paciente
+      abrirModalConfirmacao('excluir_paciente');
+    } else {
+      // Se o denunciado é um podólogo, exclua o podólogo
+      abrirModalConfirmacao('excluir_podologo');
+    }
   };
 
   // Função quando clica em SIM no modal de confirmação
@@ -161,11 +231,25 @@ export default function ListaDenuncia() {
     try {
       let endpoint = '';
       let mensagem = '';
-      console.log('ID do reporte', selectedReportInfo)
+      console.log('ID do reporte', selectedReportInfo);
+      
+      const { denunciado } = determinarDenunciadoEDenunciante(selectedReportInfo);
+      
       if (acaoTipo === 'excluir_podologo') {
+        // Verificar se realmente é um podólogo que está sendo excluído
+        if (denunciado.tipo !== 'podologo') {
+          throw new Error('Tentativa de excluir podólogo, mas o denunciado não é um podólogo');
+        }
         endpoint = `/doctor/delete/${selectedReportInfo.doctor_id}`;
         mensagem = 'Podólogo excluído com sucesso!';
-      } else {
+      } else if (acaoTipo === 'excluir_paciente') {
+        // Verificar se realmente é um paciente que está sendo excluído
+        if (denunciado.tipo !== 'paciente') {
+          throw new Error('Tentativa de excluir paciente, mas o denunciado não é um paciente');
+        }
+        endpoint = `/patient/delete/${selectedReportInfo.patient_id}`;
+        mensagem = 'Paciente excluído com sucesso!';        
+      } else if (acaoTipo === 'excluir_denuncia') {
         endpoint = `/report/delete/${selectedReportInfo.report_id}`;
         mensagem = 'Denúncia excluída com sucesso!';
       }
@@ -178,7 +262,7 @@ export default function ListaDenuncia() {
       
       // Fecha o modal de confirmação e abre o modal de check
       setModalConfirmacao(false);
-      setModalInfoReport(false)
+      setModalInfoReport(false);
       setModalCheck(true);
       
       // Recarrega os dados
@@ -232,7 +316,7 @@ export default function ListaDenuncia() {
     setIsLoading(true);
     try {
       const response = await api.get('/report');
-      console.log(response.data)
+      console.log(response.data);
       setDadosDenuncias(response.data);
     } catch (err: any) {
       console.error('Erro ao buscar denúncias:', err);
@@ -246,9 +330,15 @@ export default function ListaDenuncia() {
 
   // Textos para o modal de confirmação baseados no tipo de ação
   const getTextoConfirmacao = () => {
+    if (!selectedReportInfo || !acaoTipo) return '';
+    
+    const { denunciado } = determinarDenunciadoEDenunciante(selectedReportInfo);
+    
     switch (acaoTipo) {
       case 'excluir_podologo':
-        return 'Tem certeza que deseja excluir este podólogo? Esta ação é irreversível.';
+        return `Tem certeza que deseja excluir o podólogo ${denunciado.nome}? Esta ação é irreversível.`;
+      case 'excluir_paciente':
+        return `Tem certeza que deseja excluir o paciente ${denunciado.nome}? Esta ação é irreversível.`;
       case 'excluir_denuncia':
         return 'Tem certeza que deseja excluir esta denúncia? Esta ação é irreversível.';
       default:
@@ -277,7 +367,7 @@ export default function ListaDenuncia() {
           loadingExcluir={loadingAcao}
           visible={modalInfoReport}
           fecharModal={setModalInfoReport}
-          excluirPodologo={() => abrirModalConfirmacao('excluir_podologo')}
+          excluirPodologo={handleExcluirDenunciado} // Atualizado para função inteligente
           excluirDenuncia={() => abrirModalConfirmacao('excluir_denuncia')}
           onShowUserInfo={handleShowUserInfo}
         />
@@ -311,12 +401,13 @@ export default function ListaDenuncia() {
         <h1 className='text-[30px] font-bold text-azul'>Lista de denúncias</h1>
         
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
+          <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
             <ReactLoading
               type="spin"
               color="#2087ed"
               height={"30px"}
               width={"30px"}
+              className='m-auto'
             />
           </div>
         ) : (

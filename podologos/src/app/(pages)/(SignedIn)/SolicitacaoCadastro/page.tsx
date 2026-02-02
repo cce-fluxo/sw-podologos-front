@@ -8,6 +8,15 @@ import ReactLoading from 'react-loading';
 import { ModalInfoPodologo } from '@/Components/popUps/ModalInfoPodologo';
 import { toast } from 'react-toastify';
 
+// Interface do que temos nas colunas
+interface Column {
+  name: string;
+  selector?: (row: DadosPodologo) => string;
+  cell?: (row: DadosPodologo) => JSX.Element | null;
+  width?: string;
+  sortable?: boolean;
+}
+
 interface DadosPodologo {
   degree_type: string;
   institution: string;
@@ -31,43 +40,58 @@ export default function SolicitacaoCadastro() {
   const [loadingAceitarCadastro, setLoadingAceitarCadastro] = useState(false);
   const [modalInfoPodologo, setModalInfoPodologo] = useState(false);
 
-  const colunasTabela = [
+  const colunasTabela: Column[] = [
+    {
+      name: 'Foto',
+      width: '100px',
+      selector: (row: DadosPodologo) => row.user.first_name,
+      cell: (row: DadosPodologo) => (
+        row.user.profile_picture ? (
+          <div className="w-12 h-12 relative" 
+          onClick={() => handleRowClick(row)}>
+            <Image alt='' fill src={row.user.profile_picture} className="object-cover rounded-full" />
+          </div>
+        ) : null
+      ),
+    },
     {
       name: 'Nome',
-      selector: (row : any) => {
+      selector: (row: DadosPodologo) => row.user.first_name,
+      cell: (row : DadosPodologo) => {
         return (
-          <div className='flex items-center gap-2'>
-            { row.user.profile_picture &&
-            <div className="w-12 h-12 relative">
-              <Image alt='' fill src={row.user.profile_picture} className="object-cover rounded-full" />
-            </div>}
-            <p className='whitespace-nowrap'>{row.user.first_name + " " + row.user.last_name}</p>
-          </div>
+          <p className='whitespace-nowrap'>{row.user.first_name + " " + row.user.last_name}</p>
         )
       },
+      sortable: true
     },
     {
       name: 'Formação',
-      selector: (row : any) => {
+      selector: (row: DadosPodologo) => row.user.first_name,
+      width: '250px', // largura mínima
+      cell: (row : DadosPodologo) => {
         return (
-          <div className='flex flex-col items-start gap-2'>
+          <div className='flex flex-col items-start gap-2 py-3 min-w-[200px]' 
+            onClick={() => handleRowClick(row)}>
             <p className='whitespace-nowrap'>{row.degree_type + " em Podologia"}</p>
             <p className='whitespace-break-spaces'>{row.institution + "/" + row.degree_year}</p>
           </div>
         )
-      },
+      }
     },
     {
       name: 'Email',
-      selector: (row : any) => row.user.email,
+      selector: (row : DadosPodologo) => row.user.email,
+      sortable: true
     },
     {
       name: 'Telefone',
-      selector: (row : any) => row.user.phone_number,
+      selector: (row : DadosPodologo) => row.user.phone_number,
+      sortable: true
     },
     {
       name: 'CEP',
-      selector: (row : any) => row.user.cep,
+      selector: (row : DadosPodologo) => row.user.cep,
+      sortable: true
     },
   ];
 
@@ -200,6 +224,9 @@ export default function SolicitacaoCadastro() {
                   noRowsPerPage: false,
                   selectAllRowsItem: false,
               }}
+              selectableRows={false} 
+              selectableRowsHighlight={false}
+              selectableRowsNoSelectAll={false}
             />
           </div>
         }
