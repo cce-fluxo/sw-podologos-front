@@ -153,13 +153,13 @@ export default function SideBar() {
             <p>Sair</p>
           </Button>
         </div>
-        <ModalSimNao
-          isOpen={isOpen}
-          onNoClick={closeModal}
-          onYesClick={Sair}
-          text='Tem certeza que deseja sair de sua conta?'
-        />
       </div>
+      <ModalSimNao
+        isOpen={isOpen}
+        onNoClick={closeModal}
+        onYesClick={Sair}
+        text='Tem certeza que deseja sair de sua conta?'
+      />
     </>
   );
 }
