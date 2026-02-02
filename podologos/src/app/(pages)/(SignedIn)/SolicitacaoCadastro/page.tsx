@@ -52,7 +52,7 @@ export default function SolicitacaoCadastro() {
         return (
           <div className='flex flex-col items-start gap-2'>
             <p className='whitespace-nowrap'>{row.degree_type + " em Podologia"}</p>
-            <p className='whitespace-nowrap'>{row.institution + "/" + row.degree_year}</p>
+            <p className='whitespace-break-spaces'>{row.institution + "/" + row.degree_year}</p>
           </div>
         )
       },
