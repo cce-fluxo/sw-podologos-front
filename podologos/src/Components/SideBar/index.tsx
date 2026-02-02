@@ -1,10 +1,7 @@
 'use client';
-import Image from 'next/image';
 import { useMediaQuery } from '@mantine/hooks';
-// import Hamburguer from '@/assets/Hamburguer.svg';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-// import LogOut from '@/assets/LogOut.svg';
 import { AuthContext, AuthContextType } from '@/context/AuthContext';
 import Button from '../Button/button';
 import ModalSimNao from '../popUps/ModalSimNao';
@@ -12,11 +9,23 @@ import ModalSimNao from '../popUps/ModalSimNao';
 export default function SideBar() {
   const sm640 = useMediaQuery('(max-width: 640px)');
   const [show, setShow] = useState(false);
-  const [path, setpath] = useState(usePathname().split('/')[1]);
+  const [path, setPath] = useState(usePathname().split('/')[1]);
   const router = useRouter();
-  const authContext = useContext<AuthContextType>(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
-  const { signOut, user } = useContext(AuthContext); // Obtém signOut do contexto
+  const { signOut, user } = useContext(AuthContext);
+
+  // Fechar sidebar ao clicar fora (em mobile)
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (sm640 && show && !(e.target as Element).closest('#sidebar') && 
+          !(e.target as Element).closest('#hamburger-button')) {
+        setShow(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [sm640, show]);
 
   function openModal() {
     setIsOpen(true);
@@ -27,31 +36,55 @@ export default function SideBar() {
   }
   
   function Sair() {
-    signOut(); // Agora ele pode ser chamado
+    signOut();
     router.push('/Login');
   }
 
   return (
     <>
-      {/* <Image
-        src={Hamburguer}
-        alt=''
-        className='absolute left-5 top-[34px] -z-30'
-        style={{
-          display: sm640 ? 'block' : 'none',
-          transform: show && sm640 ? 'rotate(-90deg)' : 'rotate(0deg)',
-          transition: 'all 0.2s ease',
-        }}
-        onClick={() => {
+      {/* Botão Hamburguer para mobile */}
+      <button
+        id="hamburger-button"
+        className={`fixed left-5 top-[34px] z-50 sm:hidden ${
+          show ? 'text-azul' : 'text-black'
+        }`}
+        onClick={(e) => {
+          e.stopPropagation();
           setShow(!show);
         }}
-      /> */}
+        aria-label="Abrir/fechar menu"
+        style={{
+          transform: show ? 'rotate(90deg)' : 'rotate(0deg)',
+          transition: 'transform 0.3s ease',
+        }}
+      >
+        {/* Ícone Hamburguer (≡) */}
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="24" 
+          height="24" 
+          viewBox="0 0 24 24" 
+          fill="currentColor"
+        >
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+      </button>
+
+      {/* Overlay para mobile */}
+      {show && sm640 && (
+        <div 
+          className="fixed inset-0 z-30 bg-black bg-opacity-50"
+          onClick={() => setShow(false)}
+        />
+      )}
+
+      {/* Sidebar */}
       <div
         id='sidebar'
-        className='fixed z-40 flex h-full min-w-[100vw] flex-col bg-white px-8 shadow-lg shadow-cinza sm:static sm:min-w-[200px] lg:w-[clamp(250px,22vw,300px)] lg:min-w-[200px]'
+        className='fixed z-40 flex h-full w-[280px] flex-col bg-white px-8 shadow-lg shadow-cinza sm:static sm:min-w-[200px] lg:w-[clamp(250px,22vw,300px)] lg:min-w-[200px]'
         style={{
-          transform: !show && sm640 ? 'translateX(-100%)' : 'translateX(0)',
-          transition: 'all 0.2s ease',
+          transform: sm640 ? (show ? 'translateX(0)' : 'translateX(-100%)') : 'translateX(0)',
+          transition: 'transform 0.3s ease',
         }}
       >
         <h1 className='mt-20 text-2xl font-bold'>
@@ -60,48 +93,48 @@ export default function SideBar() {
         </h1>
         <div className='mt-8 flex flex-col gap-4'>
           <button
-            className={`text-start font-[550] text-${
-              path === 'PodologosCadastrados' ? 'azul' : 'black'
-            }`}
+            className={`text-start font-[550] ${
+              path === 'PodologosCadastrados' ? 'text-azul' : 'text-black'
+            } hover:text-azul transition-colors duration-200`}
             onClick={() => {
               router.push('/PodologosCadastrados');
-              setpath('PodologosCadastrados');
+              setPath('PodologosCadastrados');
               setShow(false);
             }}
           >
             Home
           </button>
           <button
-            className={`text-start font-[550] text-${
-              path === 'SolicitacaoCadastro' ? 'azul' : 'black'
-            }`}
+            className={`text-start font-[550] ${
+              path === 'SolicitacaoCadastro' ? 'text-azul' : 'text-black'
+            } hover:text-azul transition-colors duration-200`}
             onClick={() => {
               router.push('/SolicitacaoCadastro');
-              setpath('SolicitacaoCadastro');
+              setPath('SolicitacaoCadastro');
               setShow(false);
             }}
           >
             Solicitações de cadastro
           </button>
           <button
-            className={`text-start font-[550] text-${
-              path === 'Informacoes' ? 'azul' : 'black'
-            }`}
+            className={`text-start font-[550] ${
+              path === 'Informacoes' ? 'text-azul' : 'text-black'
+            } hover:text-azul transition-colors duration-200`}
             onClick={() => {
               router.push('/Informacoes');
-              setpath('Informacoes');
+              setPath('Informacoes');
               setShow(false);
             }}
           >
             Informações do aplicativo
           </button>
           <button
-            className={`text-start font-[550] text-${
-              path === 'ListaDenuncia' ? 'azul' : 'black'
-            }`}
+            className={`text-start font-[550] ${
+              path === 'ListaDenuncia' ? 'text-azul' : 'text-black'
+            } hover:text-azul transition-colors duration-200`}
             onClick={() => {
               router.push('/ListaDenuncia');
-              setpath('ListaDenuncia');
+              setPath('ListaDenuncia');
               setShow(false);
             }}
           >
@@ -111,7 +144,7 @@ export default function SideBar() {
         <div className='mb-8 mr-40 flex flex-1 items-end justify-end'>
           <Button
             onClick={openModal}
-            className='flex gap-2 bg-white text-black'
+            className='flex gap-2 bg-white text-black hover:bg-gray-50 transition-colors duration-200'
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M16.5 17L21.5 12L16.5 7L15.09 8.41L17.67 11H8.5V13H17.67L15.09 15.59L16.5 17Z" fill="black"/>

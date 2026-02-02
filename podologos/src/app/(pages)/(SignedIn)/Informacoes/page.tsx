@@ -50,7 +50,7 @@ export default function Informacoes() {
   }, []); // Array vazio executa apenas uma vez
 
   return (
-    <div className='flex h-full w-full flex-col gap-6 overflow-auto px-4 py-6 md:px-8 lg:px-14'>
+    <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
       <h1 className='text-2xl font-bold text-azul lg:text-3xl'>
         Informações do aplicativo
       </h1>
@@ -65,7 +65,7 @@ export default function Informacoes() {
           />
         </div>
       ) : (
-        <div className='mb-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+        <div className='mb-10 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3'>
           <Informacao
             imagem={Paciente}
             numero={infoApp.numeroUsuarios.patient_id}
