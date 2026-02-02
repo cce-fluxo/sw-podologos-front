@@ -3,13 +3,17 @@ name: Vercel Production Deployment
 on:
   push:
     branches:
-      - develop
+      - develop  
 
 jobs:
   Deploy-Production:
+    # PREVINA execuções concorrentes
+    concurrency: 
+      group: production-deploy
+      cancel-in-progress: true
+    
     runs-on: ubuntu-latest
     
-    # Adicione o env aqui, dentro do job
     env:
       VERCEL_ORG_ID: ${{ secrets.ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
@@ -18,25 +22,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      # PRIMEIRO: Configure Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: './podologos/package-lock.json'
       
-      # SEGUNDO: Instale dependências do projeto
       - name: Install dependencies
         working-directory: ./podologos
-        run: npm ci  # Usar npm ci é mais seguro que npm install
+        run: npm ci
       
-      # TERCEIRO: Instale Vercel CLI localmente
       - name: Install Vercel CLI
         working-directory: ./podologos
         run: npm install --save-dev vercel
       
-      # AGORA execute os comandos da Vercel
       - name: Pull Vercel Environment Information
         working-directory: ./podologos
         run: npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
@@ -45,6 +43,6 @@ jobs:
         working-directory: ./podologos
         run: npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       
-      - name: Deploy Project Artifacts to Production
+      - name: Deploy to Production
         working-directory: ./podologos
         run: npx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
