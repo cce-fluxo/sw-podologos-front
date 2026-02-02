@@ -9,6 +9,7 @@ import { ModalInfoDenuncia } from '@/Components/popUps/ModalInfoDenuncia';
 import { ModalApenasInfoUser } from '@/Components/popUps/ModalApenasInfoUser';
 import ModalSimNao from '@/Components/popUps/ModalSimNao';
 import ModalCheck from '@/Components/popUps/ModalCheck';
+import { toast } from 'react-toastify';
 
 // Interface do que temos nas colunas
 interface Column {
@@ -270,9 +271,7 @@ export default function ListaDenuncia() {
       
     } catch (error) {
       console.error('Erro ao executar ação:', error);
-      setMensagemSucesso('Erro ao processar a solicitação.');
-      setModalConfirmacao(false);
-      setModalCheck(true);
+      toast.error('Erro ao processar solicitação')
     } finally {
       setLoadingAcao(false);
     }

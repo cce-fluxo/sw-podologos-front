@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import api from '@/services/axios';
 import ReactLoading from 'react-loading';
 import { ModalInfoPodologo } from '@/Components/popUps/ModalInfoPodologo';
+import ModalSimNao from '@/Components/popUps/ModalSimNao';
+import ModalCheck from '@/Components/popUps/ModalCheck';
 import { toast } from 'react-toastify';
 
 // Interface do que temos nas colunas
@@ -39,6 +41,10 @@ export default function SolicitacaoCadastro() {
   const [selectedDoctorInfo, setSelectedDoctorInfo] = useState<DadosPodologo | null>(null);
   const [loadingAceitarCadastro, setLoadingAceitarCadastro] = useState(false);
   const [modalInfoPodologo, setModalInfoPodologo] = useState(false);
+  const [modalConfirmacao, setModalConfirmacao] = useState(false);
+  const [modalCheck, setModalCheck] = useState(false);
+  const [mensagemSucesso, setMensagemSucesso] = useState('');
+  const [loadingAcao, setLoadingAcao] = useState(false);
 
   const colunasTabela: Column[] = [
     {
@@ -95,11 +101,54 @@ export default function SolicitacaoCadastro() {
     },
   ];
 
+  // Função quando clica em OK no modal de check
+  const handleFecharModalCheck = () => {
+    setModalCheck(false); // Fecha modal de check
+  };
+
   const handleRowClick = async (row: any) => {
     console.log(row);
     setSelectedDoctorInfo(row);
     setModalInfoPodologo(true);
   }
+
+  // Função quando clica em NÃO no modal de confirmação
+  const handleCancelarAcao = () => {
+    setModalConfirmacao(false); // Fecha modal de confirmação
+    setModalInfoPodologo(true);
+  };
+
+  
+  // Função quando clica em SIM no modal de confirmação
+  const handleConfirmarAcao = async () => {
+    if (!selectedDoctorInfo) return;
+    
+    setLoadingAcao(true);
+    try {
+      console.log('ID do reporte', selectedDoctorInfo);
+
+      const endpoint = `/doctor/delete/${selectedDoctorInfo?.doctor_id}`;
+      const mensagem = 'Podólogo excluído com sucesso!';
+      console.log(endpoint)
+      
+      // Chamada à API
+      await api.delete(endpoint);
+      
+      // Fecha o modal de confirmação e abre o modal de check
+      setModalConfirmacao(false);
+      setMensagemSucesso(mensagem);
+      setModalCheck(true);
+      
+      // Recarrega os dados
+      buscarPodologos();
+      
+    } catch (error) {
+      console.error('Erro ao executar ação:', error);
+      toast.error('Erro ao recusar podólogo')
+    } finally {
+      setLoadingAcao(false);
+    }
+  };
 
   const buscarPodologos = async () => {
     console.log('buscando podologos');
@@ -141,12 +190,10 @@ export default function SolicitacaoCadastro() {
       if (!selectedDoctorInfo) {
         throw new Error('Selecione um médico');
       }
-      // const response = await api.patch(`/doctor/autorizar-medico/${selectedDoctorInfo.doctor_id}`);
-      // setModalInfoPodologo(false);
-      // setSelectedDoctorInfo(null);
-      // buscarPodologos();
-      // console.log(response.data);
-      toast.error('Pendência. Ainda não implementado. Necessidade de discussão')
+      
+      setModalInfoPodologo(false)
+      setModalConfirmacao(true);
+
     } catch (err: any) {
       console.log(err);
       console.log(err.response.data);
@@ -183,6 +230,22 @@ export default function SolicitacaoCadastro() {
         recusarPodologo={recusarPodologo}
         modalDeAceitarPodologo
       />
+
+      {/* Modal de Confirmação (Sim/Não) */}
+      <ModalSimNao
+        isOpen={modalConfirmacao}
+        onYesClick={handleConfirmarAcao}
+        onNoClick={handleCancelarAcao}
+        text={`Tem certeza que deseja excluir o podólogo ${selectedDoctorInfo?.user?.first_name} ${selectedDoctorInfo?.user?.last_name}? Esta ação é irreversível.`}
+      />
+
+      {/* Modal de Check (Sucesso) */}
+      <ModalCheck
+        isOpen={modalCheck}
+        mensagem={mensagemSucesso}
+        onNoClick={handleFecharModalCheck}
+      />
+
       <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>
         <h1 className='text-[30px] font-bold text-azul'>
           Solicitações de cadastro
