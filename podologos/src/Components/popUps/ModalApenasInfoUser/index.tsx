@@ -1,4 +1,3 @@
-import Button from "@/Components/Button/button";
 import React from "react";
 import Image from 'next/image';
 
