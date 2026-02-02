@@ -1,33 +1,50 @@
 name: Vercel Production Deployment
 
-env:
-    VERCEL_ORG_ID: ${{ secrets.ORG_ID }}
-    VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-
 on:
-    push:
-        branches:
-            - deploy
+  push:
+    branches:
+      - deploy
 
 jobs:
-    Deploy-Production:
-        runs-on: ubuntu-latest
-        steps:
-
-            - uses: actions/checkout@v3
-
-            - name: Install Vercel CLI
-              working-directory: ./podologos
-              run: npm install --global vercel
-
-            - name: Pull Vercel Environment Information
-              working-directory: ./podologos
-              run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-
-            - name: Build Project Artifacts
-              working-directory: ./podologos
-              run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-            - name: Deploy Project Artifacts
-              working-directory: ./podologos
-              run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+  Deploy-Production:
+    runs-on: ubuntu-latest
+    
+    # Adicione o env aqui, dentro do job
+    env:
+      VERCEL_ORG_ID: ${{ secrets.ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # PRIMEIRO: Configure Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './podologos/package-lock.json'
+      
+      # SEGUNDO: Instale dependências do projeto
+      - name: Install dependencies
+        working-directory: ./podologos
+        run: npm ci  # Usar npm ci é mais seguro que npm install
+      
+      # TERCEIRO: Instale Vercel CLI localmente
+      - name: Install Vercel CLI
+        working-directory: ./podologos
+        run: npm install --save-dev vercel
+      
+      # AGORA execute os comandos da Vercel
+      - name: Pull Vercel Environment Information
+        working-directory: ./podologos
+        run: npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Build Project Artifacts
+        working-directory: ./podologos
+        run: npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Deploy Project Artifacts to Production
+        working-directory: ./podologos
+        run: npx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
