@@ -19,6 +19,11 @@ const lexend = Lexend({
 export const metadata: Metadata = {
   title: 'Pharmacure+',
   description: 'Aplicativo de gestão de usuários',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' }
+    ]
+  }
 };
 
 export default function RootLayout({
