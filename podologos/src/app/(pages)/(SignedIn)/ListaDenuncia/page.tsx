@@ -178,6 +178,7 @@ export default function ListaDenuncia() {
       
       // Fecha o modal de confirmação e abre o modal de check
       setModalConfirmacao(false);
+      setModalInfoReport(false)
       setModalCheck(true);
       
       // Recarrega os dados

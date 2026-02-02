@@ -27,7 +27,6 @@ export default function PodologosCadastrados() {
   const [dadosPodologos, setDadosPodologos] = useState<DadosPodologo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDoctorInfo, setSelectedDoctorInfo] = useState<DadosPodologo | null>(null);
-  const [loadingAceitarCadastro, setLoadingAceitarCadastro] = useState(false);
   const [modalInfoPodologo, setModalInfoPodologo] = useState(false);
 
   const colunasTabela = [
@@ -113,6 +112,7 @@ export default function PodologosCadastrados() {
       <ModalInfoPodologo 
         selectedDoctorInfo={selectedDoctorInfo}  
         visible={modalInfoPodologo}
+        loadingAceitarCadastro
         fecharModal={setModalInfoPodologo}
       />
       <div className='flex h-full w-full flex-col gap-3 overflow-auto px-14 py-6'>

@@ -25,6 +25,7 @@ export default function SideBar() {
   function closeModal() {
     setIsOpen(false);
   }
+  
   function Sair() {
     signOut(); // Agora ele pode ser chamado
     router.push('/Login');

@@ -2,25 +2,52 @@ import Button from "@/Components/Button/button";
 import React from "react";
 import Image from 'next/image';
 
+interface DadosPodologo {
+    degree_type: string;
+    institution: string;
+    degree_year: string;
+    degree_photo: string;
+    doctor_id: string;
+    user: {
+        profile_picture: string;
+        first_name: string;
+        last_name: string;
+        phone_number: string;
+        email: string;
+        cep: string
+    }
+}
+
 interface InfoPodologosProps {
-    selectedUserInfo: object;
+    selectedUserInfo: DadosPodologo;
     visible: boolean;
     fecharModal: (boolean: boolean) => void;
-  }
+}
 
 export function ModalApenasInfoUser({
-  selectedUserInfo,
-  visible,
-  fecharModal
+    selectedUserInfo,
+    visible,
+    fecharModal
 }: InfoPodologosProps) {
 
     if (!visible) {
         return (<></>);
     }
-  
-    return(
-    <div className='absolute h-screen w-full bg-[#00000031] z-50 flex items-center justify-center'>
-        <div className='flex flex-col items-center justify-center rounded-xl bg-white px-10 py-6'>
+
+    return (
+    <>
+      {/* Overlay escuro */}
+        <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => fecharModal(false)}
+        />
+        
+        {/* Modal */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-10">
+            <div 
+            className="relative bg-white px-4 py-4 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+            >
             <svg onClick={() => fecharModal(false)} 
                 className='ml-auto cursor-pointer' 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -31,7 +58,7 @@ export function ModalApenasInfoUser({
             >
                 <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="#46555A" />
             </svg>
-            <h2 className='text-azul text-2xl font-bold mb-6'>Informações do {selectedUserInfo?.degree_type ? 'podólogo' : 'paciente'}</h2>
+            <h2 className='text-azul text-2xl font-bold mb-6 text-center'>Informações do {selectedUserInfo?.degree_type ? 'podólogo' : 'paciente'}</h2>
             <div className='flex flex-row items-center'>
                 {
                 /* Imagem */
@@ -56,7 +83,7 @@ export function ModalApenasInfoUser({
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+    </>
     );
 }
-  

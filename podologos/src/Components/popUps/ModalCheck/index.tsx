@@ -41,22 +41,20 @@ function ModalCheck({ isOpen, mensagem, onNoClick }: PopupProps) {
     }
   };
 
-  const handleButtonClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onNoClick();
-  };
-
   return (
+    <>
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black bg-opacity-50 z-40"
       onClick={handleOverlayClick}
     >
       {/* Overlay escuro */}
-      <div className="absolute inset-0 bg-black bg-opacity-50" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-10">
 
       {/* Modal */}
-      <div className="relative z-[10000] w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+        <div 
+          className="relative bg-white px-4 py-4 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >        
         {/* Conteúdo */}
         <div className="flex flex-col items-center">
           {/* Ícone de confirmação */}
@@ -85,14 +83,17 @@ function ModalCheck({ isOpen, mensagem, onNoClick }: PopupProps) {
           <div className="w-full border-t border-zinc-300 pt-4">
             <Button
               className="w-full py-3"
-              onClick={() => handleButtonClick()}
+              onClick={onNoClick}
             >
               <p className="text-lg font-semibold text-white">Ok</p>
             </Button>
           </div>
+
+        </div>
         </div>
       </div>
     </div>
+    </>
   );
 }
 
