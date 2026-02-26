@@ -1,6 +1,5 @@
 'use client';
 import { SignInRequest } from '@/services/auth';
-import { error } from 'console';
 import { createContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/services/axios';
