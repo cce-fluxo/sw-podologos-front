@@ -28,19 +28,18 @@ export function AuthProvider({ children }: any) {
 
   async function signIn({ email, password }: signInData) {
     try {
-      console.log('Iniciando signIn com:', { email, password });
       const response = await SignInRequest({ email, password });
-      console.log('Testando token: ', response.token);
       if (response) {
         localStorage.setItem('token', response.token);
         setToken(response.token);
         setUser(response.data)
         await getAdmin();
       } else {
-        console.log('Usuário não encontrado (tratamento)');
+        throw new Error('Token não recebido');
       }
     } catch (error) {
       console.log('Erro no signIn:', error);
+      throw error; // REPASSA o erro para o componente de Login
     }
   }
 

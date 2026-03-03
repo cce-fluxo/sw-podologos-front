@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { ClipLoader } from 'react-spinners';
 import PasswordInput from '@/Components/Inputs/PasswordInput';
 import Input from '@/Components/Inputs/Input';
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const { signIn } = useContext(AuthContext);
@@ -64,7 +65,8 @@ export default function Login() {
     return isValid;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     
     if (!validateForm()) {
       return;
@@ -90,11 +92,10 @@ export default function Login() {
       if (error.response?.status === 401) {
         setErrors(prev => ({
           ...prev,
-          email: 'Email ou senha inválidos',
           password: 'Email ou senha inválidos'
         }));
       } else {
-        alert('Erro ao fazer login. Tente novamente.');
+        toast.error('Erro ao fazer login. Tente novamente.');
       }
     } finally {
       setLoading(false);
